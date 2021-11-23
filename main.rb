@@ -2,6 +2,8 @@ require 'sinatra/base'
 require 'sequel'
 require 'sqlite3'
 require 'bcrypt'
+require 'jwt'
+require 'securerandom'
 
 class AnotherNothing < Sinatra::Base
   db = Sequel.sqlite
@@ -20,9 +22,7 @@ class AnotherNothing < Sinatra::Base
   $users = db[:users]
   $config = db[:config]
 
-  puts
-
-  $config.insert(:key => :jwt, :value => (0..18).map{Random.rand(1...9)}) unless $config.where(:key => :jwt) != nil
+  $config.insert(:key => "jwt", :value => SecureRandom.hex) if $config.first(:key => "jwt") === nil
 
   set :public_folder, 'build'
 
@@ -30,6 +30,7 @@ class AnotherNothing < Sinatra::Base
     if $users.count < 1
       send_file 'build/adduser.html'
     else
+      # TODO: add checks too
       send_file 'build/index.html'
     end
   end
@@ -37,6 +38,7 @@ class AnotherNothing < Sinatra::Base
   post '/addus' do
     if $users.count < 1
       addUser(params)
+      response.set_cookie :login, :value => jwt(params[:name])
     end
     redirect '/'
     # TODO: add checks
@@ -44,6 +46,11 @@ class AnotherNothing < Sinatra::Base
 
   def addUser(d)
     $users.insert(:username => d[:name], :password => BCrypt::Password.create(d[:pass]), :apps => "[]")
+  end
+
+  def jwt(a)
+    p = { user: a }
+    JWT.encode(p, "#{$config.first(:key => "jwt")}", 'HS256')
   end
 
   run! if app_file == $0
