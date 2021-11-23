@@ -1,0 +1,85 @@
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;700&display=swap');
+
+:root {
+  --color1: #e3b505;
+  --color2: #95190c;
+  --color3: #610345;
+  --color4: #107e7d;
+  --color5: #044b7f;
+}
+
+body, input {
+  font-family: 'IBM Plex Sans';
+}
+
+.e {
+  background-color: var(--color2);
+  color: #fff;
+  display: block;
+}
+
+.e>*:first-child {
+  font-weight: bold;
+}
+
+.with-margin {
+  margin: 1em;
+}
+
+.with-v-margin {
+  margin: 1em 0;
+}
+
+.with-padding {
+  padding: 1em;
+}
+
+.with-br {
+  border-radius: 6px;
+}
+
+p {
+  margin: 0;
+}
+
+.form {
+  width: 400px;
+  max-width: 100%;
+}
+
+.btn {
+  padding: .8em 1em;
+  border-radius: 4px;
+  border: none;
+  cursor: pointer;
+}
+
+.btn-p {
+  background-color: var(--color1)
+}
+
+[type="text"], [type="password"] {
+  padding: .5em;
+  border-radius: 4px;
+  border: solid 2px #d8d8d8;
+  outline: none;
+  width: 100%;
+}
+
+[type="text"]:focus, [type="password"]:focus {
+  border-color: var(--color5)
+}
+
+[type="submit"] {
+  display: block;
+}
+
+label {
+  display: block;
+  margin: .5em 0;
+}
+
+a {
+  text-decoration: none;
+  color: var(--color5)
+}

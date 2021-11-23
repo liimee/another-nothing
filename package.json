@@ -1,0 +1,18 @@
+{
+  "name": "another-nothing",
+  "version": "0.0.0",
+  "private": true,
+  "license": "MIT",
+  "devDependencies": {
+    "parcel": "^2.0.1"
+  },
+  "scripts": {
+    "dev": "parcel f/index.html",
+    "start": "parcel build f/index.html f/adduser.html --dist-dir build && ruby main.rb"
+  },
+  "dependencies": {
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "react-feather": "^2.0.9"
+  }
+}
