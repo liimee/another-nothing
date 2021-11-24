@@ -30,8 +30,13 @@ class AnotherNothing < Sinatra::Base
     if $users.count < 1
       send_file 'build/adduser.html'
     else
-      # TODO: add checks too
-      send_file 'build/index.html'
+      begin
+        JWT.decode request.cookies["login"], "#{$config.first(:key => "jwt")}", true, { algorithm: 'HS256' }
+        send_file 'build/index.html'
+      rescue
+        "YOU NEED TO LOG IN"
+        #TODO
+      end
     end
   end
 
