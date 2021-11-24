@@ -34,8 +34,7 @@ class AnotherNothing < Sinatra::Base
         JWT.decode request.cookies["login"], "#{$config.first(:key => "jwt")}", true, { algorithm: 'HS256' }
         send_file 'build/index.html'
       rescue
-        "YOU NEED TO LOG IN"
-        #TODO
+        send_file 'build/login.html'
       end
     end
   end
@@ -47,6 +46,13 @@ class AnotherNothing < Sinatra::Base
     end
     redirect '/'
     # TODO: add checks
+  end
+
+  post '/login' do
+    redirect back unless $users.first(:username => params[:name]) != nil
+    x = BCrypt::Password.new($users.first(:username => params[:name])[:password])
+    response.set_cookie :login, :value => jwt(params[:name]) if x == params[:pass]
+    redirect '/'
   end
 
   def addUser(d)
