@@ -1,3 +1,4 @@
 .parcel-cache/
 build/
 node_modules
+data/

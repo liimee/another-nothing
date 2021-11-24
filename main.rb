@@ -6,15 +6,17 @@ require 'jwt'
 require 'securerandom'
 
 class AnotherNothing < Sinatra::Base
-  db = Sequel.sqlite
+  Dir.mkdir 'data' unless File.exist? 'data'
 
-  db.create_table :users do
+  db = Sequel.connect 'sqlite://data/data.db'
+
+  db.create_table? :users do
     primary_key String :username
     String :password
     String :apps
   end
 
-  db.create_table :config do
+  db.create_table? :config do
     primary_key String :key
     String :value
   end
@@ -60,7 +62,7 @@ class AnotherNothing < Sinatra::Base
   end
 
   def jwt(a)
-    p = { user: a }
+    p = { user: a, iat: Time.now.to_i }
     JWT.encode(p, "#{$config.first(:key => "jwt")}", 'HS256')
   end
 
