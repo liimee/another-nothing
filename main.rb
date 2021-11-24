@@ -45,7 +45,7 @@ class AnotherNothing < Sinatra::Base
       response.set_cookie :login, :value => jwt(params[:name])
     end
     redirect '/'
-    # TODO: add checks
+    # TODO: add checks?
   end
 
   post '/login' do
