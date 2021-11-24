@@ -12,6 +12,11 @@ body, input {
   font-family: 'IBM Plex Sans';
 }
 
+body {
+  user-select: none;
+  -webkit-user-select: none;
+}
+
 .e {
   background-color: var(--color2);
   color: #fff;
@@ -100,4 +105,26 @@ a:hover, a:focus {
 
 .fix {
   position: fixed;
+}
+
+.bar {
+  font-weight: bold;
+  padding: .8em;
+  position: fixed;
+  font-size: 1.2em;
+  bottom: 2em;
+  border-radius: 4px;
+  left: 50%;
+  transform: translateX(-50%);
+  box-shadow: 0 5px 8px 0 hsla(0,0%,0%,.2);
+  background-color: #fff;
+}
+
+.desktop {
+  top: 0;
+  left: 0;
+  position: fixed;
+  width: 100vw;
+  height: 100vh;
+  background: linear-gradient(to right, #e4ff61, rgba(0, 255, 35, .25)) /*TODO: custom bg?*/
 }
