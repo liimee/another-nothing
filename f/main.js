@@ -17,6 +17,9 @@ class Bar extends Component {
   }
 
   openApp() {
+    this.setState({
+      open: false
+    })
     this.props.openthing()
   }
 
