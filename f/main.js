@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faAngleUp, faTimes, faExpandAlt } from '@fortawesome/free-solid-svg-icons'
+import Draggable from 'react-draggable';
 
 class Bar extends Component {
   //favorites [apps]?
@@ -41,7 +42,11 @@ class App extends Component {
 }
 
 function Window({app}) {
-  return <div className="window" data-app-id={app.id}><div><span className="windowbtn"><button><FontAwesomeIcon icon={faTimes} /></button><button><FontAwesomeIcon icon={faExpandAlt} /></button></span></div><iframe src={"/apps/"+app.app} /></div>
+  return <Draggable
+    handle=".windowhandle"
+  >
+  <div className="window" data-app-id={app.id}><div className="windowhandle"><span className="windowbtn"><button><FontAwesomeIcon icon={faTimes} /></button><button><FontAwesomeIcon icon={faExpandAlt} /></button></span></div><iframe src={"/apps/"+app.app} /></div>
+  </Draggable>
 }
 
 ReactDOM.render(<App />, document.querySelector('#app'))
