@@ -6,7 +6,10 @@
   --color3: #610345;
   --color4: #107e7d;
   --color5: #044b7f;
-  /*remove palette unless used?*/
+  /*
+    remove palette unless used?
+    remove unused class too, I guess
+  */
 }
 
 body, input {
@@ -128,4 +131,17 @@ a:hover, a:focus {
   width: 100vw;
   height: 100vh;
   background: linear-gradient(to right, #e4ff61, rgba(0, 255, 35, .25)) /*TODO: custom bg?*/
+}
+
+.window {
+  box-shadow: 0 5px 8px 0 hsla(0,0%,0%,.2);
+  padding: .5em;
+  border-radius: 6px;
+  background-color: #fff;
+  position: fixed;
+}
+
+.window > iframe {
+  border-radius: 4px;
+  border: none;
 }
