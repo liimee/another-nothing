@@ -1,15 +1,60 @@
-import React, { Component } from 'react';
+import React, { Component, useEffect } from 'react';
 import ReactDOM from 'react-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faAngleUp, faTimes, faExpandAlt } from '@fortawesome/free-solid-svg-icons'
+import { faAngleUp, faAngleDown, faTimes, faExpandAlt } from '@fortawesome/free-solid-svg-icons'
 import Draggable from 'react-draggable';
 
 class Bar extends Component {
   //favorites [apps]?
   //TODO: connected/disconnected status?
 
+  constructor(props) {
+    super(props)
+    this.state = {
+      open: false,
+      apps: {}
+    }
+  }
+
+  openApp() {
+    this.props.openthing()
+  }
+
+  componentDidMount() {
+    //useEffect(() => {
+      fetch('/apps')
+      .then(r => {
+        return r.json()
+      }).then((d) => {
+        this.setState({
+          apps: d
+        })
+      })
+    //})
+  }
+
+  toggle() {
+    this.setState({
+      open: !this.state.open
+    })
+  }
+
   render() {
-    return <div className="bar">Apps <FontAwesomeIcon icon={faAngleUp} /></div>
+    return (
+      <>
+      <div onClick={() => this.toggle()} className="bar">Apps <FontAwesomeIcon icon={this.state.open ? faAngleDown : faAngleUp} /></div>
+      {(() => {
+        if(this.state.open) return (
+          <div className="apps fs with-padding">
+          <h1>Another Nothing</h1>
+          <div class="applist">
+          {Object.values(this.state.apps).map(v => <span onClick={() => this.openApp()}>{v.name}</span>)}
+          </div>
+          </div>
+        )
+      })()}
+      </>
+    )
   }
 }
 
@@ -19,10 +64,11 @@ class App extends Component {
     this.state = {windows: [{app: 'Welcome', id: 0}], num: 1}
   }
 
-  click() {
+  click = () => {
+    console.log(this)
     var d = this.state.windows;
     d.push({
-      app: 'welcome',
+      app: 'Welcome',
       id: this.state.num
     });
     this.setState({
@@ -35,7 +81,7 @@ class App extends Component {
     return (
       <><div className="desktop">
       {this.state.windows.map((e) => {return <Window app={e} />})}
-      <Bar />
+      <Bar openthing={this.click} />
       </div></>
     )
   }
