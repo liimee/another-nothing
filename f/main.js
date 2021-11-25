@@ -72,7 +72,8 @@ class App extends Component {
     var d = this.state.windows;
     d.push({
       app: 'Welcome',
-      id: this.state.num
+      id: this.state.num,
+      fs: false
     });
     this.setState({
       windows: d,
@@ -80,21 +81,31 @@ class App extends Component {
     })
   }
 
+  toggleFull = (o) => {
+    var f = this.state.windows
+    var d = f.findIndex(s => s.id == o);
+    f[d].fs = !f[d].fs;
+    this.setState({
+      windows: f
+    })
+  }
+
   render() {
     return (
       <><div className="desktop">
-      {this.state.windows.map((e) => {return <Window app={e} />})}
+      {this.state.windows.map((e) => {return <Window app={e} full={this.toggleFull} />})}
       <Bar openthing={this.click} />
       </div></>
     )
   }
 }
 
-function Window({app}) {
+function Window({app, full}) {
   return <Draggable
     handle=".windowhandle"
+    disabled={app.fs}
   >
-  <div className="window" data-app-id={app.id}><div className="windowhandle"><span className="windowbtn"><button><FontAwesomeIcon icon={faTimes} /></button><button><FontAwesomeIcon icon={faExpandAlt} /></button></span></div><iframe src={"/apps/"+app.app} /></div>
+  <div className={app.fs ? 'window full' : 'window'}><div className="windowhandle"><span className="windowbtn"><button><FontAwesomeIcon icon={faTimes} /></button><button onClick={() => full(app.id)}><FontAwesomeIcon icon={faExpandAlt} /></button></span>{app.id}</div><iframe src={"/apps/"+app.app} /></div>
   </Draggable>
 }
 
