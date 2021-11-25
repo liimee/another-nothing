@@ -5,6 +5,15 @@
     <title>welcome</title>
   </head>
   <body>
-    welcome
+    <div id="e">
+
+    </div>
+    <script type="text/javascript">
+    var e = 0;
+      setInterval(() => {
+        document.querySelector('#e').innerText = e
+        e ++;
+      }, 1000)
+    </script>
   </body>
 </html>

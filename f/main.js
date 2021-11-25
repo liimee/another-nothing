@@ -6,7 +6,7 @@ import { faAngleUp } from '@fortawesome/free-solid-svg-icons'
 class Bar extends Component {
   //favorites [apps]?
   //TODO: connected/disconnected status?
-  
+
   render() {
     return <div className="bar">Apps <FontAwesomeIcon icon={faAngleUp} /></div>
   }
@@ -21,11 +21,12 @@ class App extends Component {
   click() {
     var d = this.state.windows;
     d.push('welcome');
-    this.state.windows = d;
+    this.setState({
+      windows: d
+    })
   }
 
   render() {
-    this.click()
     return (
       <><div className="desktop">
       {this.state.windows.map((e) => {return <Window app={e} />})}
