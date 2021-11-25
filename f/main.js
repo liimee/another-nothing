@@ -64,7 +64,19 @@ class Bar extends Component {
 class App extends Component {
   constructor(props) {
     super(props)
-    this.state = {windows: [{app: 'Welcome', id: 0}], num: 1}
+    this.state = {windows: []}
+  }
+
+  num = 0;
+
+  noOneIsAtTheTop = () => {
+    var s = this.state.windows;
+    s.forEach((_, i) => {
+      s[i].top = false
+    })
+    this.setState({
+      windows: s
+    })
   }
 
   click = () => {
@@ -72,13 +84,14 @@ class App extends Component {
     var d = this.state.windows;
     d.push({
       app: 'Welcome',
-      id: this.state.num,
-      fs: false
+      id: this.num,
+      fs: false,
+      top: true
     });
     this.setState({
-      windows: d,
-      num: this.state.num++
+      windows: d
     })
+    this.num+=1
   }
 
   toggleFull = (o) => {
@@ -90,22 +103,33 @@ class App extends Component {
     })
   }
 
+  drag = (o) => {
+    this.noOneIsAtTheTop()
+    var f = this.state.windows
+    var d = f.findIndex(s => s.id == o);
+    f[d].top = true;
+    this.setState({
+      windows: f
+    })
+  }
+
   render() {
     return (
       <><div className="desktop">
-      {this.state.windows.map((e) => {return <Window app={e} full={this.toggleFull} />})}
+      {this.state.windows.map((e) => {return <Window app={e} full={this.toggleFull} drag={this.drag} />})}
       <Bar openthing={this.click} />
       </div></>
     )
   }
 }
 
-function Window({app, full}) {
+function Window({app, full, drag}) {
   return <Draggable
     handle=".windowhandle"
     disabled={app.fs}
+    onStart={() => drag(app.id)}
   >
-  <div className={app.fs ? 'window full' : 'window'}><div className="windowhandle"><span className="windowbtn"><button><FontAwesomeIcon icon={faTimes} /></button><button onClick={() => full(app.id)}><FontAwesomeIcon icon={faExpandAlt} /></button></span>{app.id}</div><iframe src={"/apps/"+app.app} /></div>
+  <div className={app.fs ? 'window full' : 'window'} data-at-the-top={app.top.toString()}><div className="windowhandle"><span className="windowbtn"><button><FontAwesomeIcon icon={faTimes} /></button><button onClick={() => full(app.id)}><FontAwesomeIcon icon={faExpandAlt} /></button></span>{app.id}</div><iframe src={"/apps/"+app.app} /></div>
   </Draggable>
 }
 

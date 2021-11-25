@@ -140,6 +140,11 @@ a:hover, a:focus {
   border-radius: 6px;
   background-color: #fff;
   position: fixed;
+  z-index: 1;
+}
+
+.window[data-at-the-top="true"] {
+  z-index: 2;
 }
 
 .window.full {
