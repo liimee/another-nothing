@@ -9,7 +9,8 @@ s = JSON.parse db[:config].first(:key => "apps")[:value]
 e = {"/" => AnotherNothing.new}
 s.each { |g|
   require_relative "apps/#{g.downcase}/main.rb"
-  e['/'+g] = Kernel.const_get(g+'App').new()
+  e['/apps/'+g] = Kernel.const_get(g+'App').new()
+  # TODO: don't let unauthorized users access this
 }
 
 run Rack::URLMap.new(e)
