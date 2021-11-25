@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faAngleUp } from '@fortawesome/free-solid-svg-icons'
+import { faAngleUp, faTimes, faExpandAlt } from '@fortawesome/free-solid-svg-icons'
 
 class Bar extends Component {
   //favorites [apps]?
@@ -15,14 +15,18 @@ class Bar extends Component {
 class App extends Component {
   constructor(props) {
     super(props)
-    this.state = {windows: ['Welcome']}
+    this.state = {windows: [{app: 'Welcome', id: 0}], num: 1}
   }
 
   click() {
     var d = this.state.windows;
-    d.push('welcome');
+    d.push({
+      app: 'welcome',
+      id: this.state.num
+    });
     this.setState({
-      windows: d
+      windows: d,
+      num: this.state.num++
     })
   }
 
@@ -37,7 +41,7 @@ class App extends Component {
 }
 
 function Window({app}) {
-  return <div className="window"><iframe src={"/apps/"+app} /></div>
+  return <div className="window" data-app-id={app.id}><div><span className="windowbtn"><button><FontAwesomeIcon icon={faTimes} /></button><button><FontAwesomeIcon icon={faExpandAlt} /></button></span></div><iframe src={"/apps/"+app.app} /></div>
 }
 
 ReactDOM.render(<App />, document.querySelector('#app'))
