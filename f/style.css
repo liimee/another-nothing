@@ -6,10 +6,11 @@
   --color3: #610345;
   --color4: #107e7d;
   --color5: #044b7f;
+  /*remove palette unless used?*/
 }
 
 body, input {
-  font-family: 'IBM Plex Sans';
+  font-family: 'IBM Plex Sans', sans-serif;
 }
 
 body {
@@ -113,7 +114,7 @@ a:hover, a:focus {
   position: fixed;
   font-size: 1.2em;
   bottom: 2em;
-  border-radius: 4px;
+  border-radius: 6px;
   left: 50%;
   transform: translateX(-50%);
   box-shadow: 0 5px 8px 0 hsla(0,0%,0%,.2);

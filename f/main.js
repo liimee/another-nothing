@@ -11,6 +11,6 @@ function App() {
 
 function Bar() {
   //favorites [apps]?
-  //TODO: connected/disconnected status
+  //TODO: connected/disconnected status?
   return <div className="bar">Apps <FontAwesomeIcon icon={faAngleUp} /></div>
 }

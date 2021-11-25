@@ -1,12 +1,15 @@
-require 'sinatra/base'
 require 'sequel'
 require 'sqlite3'
 require 'bcrypt'
 require 'jwt'
 require 'securerandom'
 
-class AnotherNothing < Sinatra::Base
+require './base'
+require './apps/welcome/main.rb'
+
+class AnotherNothing < AnotherNothingBase
   Dir.mkdir 'data' unless File.exist? 'data'
+  Dir.mkdir 'apps' unless File.exist? 'apps'
 
   db = Sequel.connect 'sqlite://data/data.db'
 
@@ -32,11 +35,10 @@ class AnotherNothing < Sinatra::Base
     if $users.count < 1
       send_file 'build/adduser.html'
     else
-      begin
-        JWT.decode request.cookies["login"], "#{$config.first(:key => "jwt")}", true, { algorithm: 'HS256' }
-        send_file 'build/index.html'
-      rescue
+      if checklogin == nil
         send_file 'build/login.html'
+      else
+        send_file 'build/index.html'
       end
     end
   end
@@ -58,7 +60,8 @@ class AnotherNothing < Sinatra::Base
   end
 
   def addUser(d)
-    $users.insert(:username => d[:name], :password => BCrypt::Password.create(d[:pass]), :apps => "[]")
+    $users.insert(:username => d[:name], :password => BCrypt::Password.create(d[:pass]), :apps => "{welcome: {name: 'Welcome'}}")
+    Dir.mkdir("data/#{d[:name]}")
   end
 
   def jwt(a)
@@ -66,5 +69,5 @@ class AnotherNothing < Sinatra::Base
     JWT.encode(p, "#{$config.first(:key => "jwt")}", 'HS256')
   end
 
-  run! if app_file == $0
+  set :port, 3000
 end
