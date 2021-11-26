@@ -4,6 +4,38 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faAngleUp, faAngleDown, faTimes, faExpandAlt } from '@fortawesome/free-solid-svg-icons'
 import Draggable from 'react-draggable';
 
+class Window extends Component {
+  constructor(props) {
+    super(props)
+  }
+
+  componentDidMount() {
+    window.addEventListener('message', this.e)
+  }
+
+  e = e => {
+    this.props.msg(e, this.props.app.id)
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('message', this.e)
+  }
+
+  render() {
+    const app = this.props.app;
+    const drag = this.props.drag;
+    const full = this.props.full;
+
+    return <Draggable
+    handle=".windowhandle"
+    disabled={app.fs}
+    onStart={() => drag(app.id)}
+    >
+    <div className={app.fs ? 'window full' : 'window'} data-at-the-top={app.top.toString()}><div className="windowhandle"><span className="windowbtn"><button><FontAwesomeIcon icon={faTimes} /></button><button onClick={() => full(app.id)}><FontAwesomeIcon icon={faExpandAlt} /></button></span>{app.id}</div><iframe src={"/apps/"+app.app} /></div>
+    </Draggable>
+  }
+}
+
 class Bar extends Component {
   //favorites [apps]?
   //TODO: connected/disconnected status?
@@ -25,14 +57,14 @@ class Bar extends Component {
 
   componentDidMount() {
     //useEffect(() => {
-      fetch('/apps')
-      .then(r => {
-        return r.json()
-      }).then((d) => {
-        this.setState({
-          apps: d
-        })
+    fetch('/apps')
+    .then(r => {
+      return r.json()
+    }).then((d) => {
+      this.setState({
+        apps: d
       })
+    })
     //})
   }
 
@@ -113,24 +145,18 @@ class App extends Component {
     })
   }
 
+  msg = (e, o) => {
+    //TODO: things?
+  }
+
   render() {
     return (
       <><div className="desktop">
-      {this.state.windows.map((e) => {return <Window app={e} full={this.toggleFull} drag={this.drag} />})}
+      {this.state.windows.map((e) => {return <Window app={e} full={this.toggleFull} drag={this.drag} msg={this.msg} />})}
       <Bar openthing={this.click} />
       </div></>
     )
   }
-}
-
-function Window({app, full, drag}) {
-  return <Draggable
-    handle=".windowhandle"
-    disabled={app.fs}
-    onStart={() => drag(app.id)}
-  >
-  <div className={app.fs ? 'window full' : 'window'} data-at-the-top={app.top.toString()}><div className="windowhandle"><span className="windowbtn"><button><FontAwesomeIcon icon={faTimes} /></button><button onClick={() => full(app.id)}><FontAwesomeIcon icon={faExpandAlt} /></button></span>{app.id}</div><iframe src={"/apps/"+app.app} /></div>
-  </Draggable>
 }
 
 ReactDOM.render(<App />, document.querySelector('#app'))
