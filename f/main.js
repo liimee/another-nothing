@@ -103,6 +103,15 @@ class App extends Component {
     })
   }
 
+  close = (o) => {
+    var f = this.state.windows
+    var d = f.findIndex(s => s.id == o);
+    f.splice(d, 1);
+    this.setState({
+      windows: f
+    })
+  }
+
   drag = (o) => {
     this.noOneIsAtTheTop()
     var f = this.state.windows
@@ -116,20 +125,20 @@ class App extends Component {
   render() {
     return (
       <><div className="desktop">
-      {this.state.windows.map((e) => {return <Window app={e} full={this.toggleFull} drag={this.drag} />})}
+      {this.state.windows.map((e) => {return <Window app={e} full={this.toggleFull} drag={this.drag} close={this.close} />})}
       <Bar openthing={this.click} />
       </div></>
     )
   }
 }
 
-function Window({app, full, drag}) {
+function Window({app, full, drag, close}) {
   return <Draggable
     handle=".windowhandle"
     disabled={app.fs}
     onStart={() => drag(app.id)}
   >
-  <div className={app.fs ? 'window full' : 'window'} data-at-the-top={app.top.toString()}><div className="windowhandle"><span className="windowbtn"><button><FontAwesomeIcon icon={faTimes} /></button><button onClick={() => full(app.id)}><FontAwesomeIcon icon={faExpandAlt} /></button></span>{app.id}</div><iframe src={"/apps/"+app.app} /></div>
+  <div className={app.fs ? 'window full' : 'window'} data-at-the-top={app.top.toString()}><div className="windowhandle"><span className="windowbtn"><button onClick={() => close(app.id)}><FontAwesomeIcon icon={faTimes} /></button><button onClick={() => full(app.id)}><FontAwesomeIcon icon={faExpandAlt} /></button></span>{app.id}</div><iframe src={"/apps/"+app.app} /></div>
   </Draggable>
 }
 
