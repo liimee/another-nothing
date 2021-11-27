@@ -1,11 +1,12 @@
-import React, { Component, useEffect } from 'react';
+import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faAngleUp, faAngleDown, faTimes, faExpandAlt } from '@fortawesome/free-solid-svg-icons'
 import Draggable from 'react-draggable';
+import { Win, Apps, Appp } from './types';
 
-class Window extends Component {
-  constructor(props) {
+class Window extends Component<Win, {}> {
+  constructor(props: Win) {
     super(props)
   }
 
@@ -13,7 +14,7 @@ class Window extends Component {
     window.addEventListener('message', this.e)
   }
 
-  e = e => {
+  e = (e: Event) => {
     this.props.msg(e, this.props.app.id)
   }
 
@@ -36,11 +37,11 @@ class Window extends Component {
   }
 }
 
-class Bar extends Component {
+class Bar extends Component<{openthing: Function}, {open: Boolean, apps: {}}> {
   //favorites [apps]?
   //TODO: connected/disconnected status?
 
-  constructor(props) {
+  constructor(props: {openthing: Function}) {
     super(props)
     this.state = {
       open: false,
@@ -82,8 +83,8 @@ class Bar extends Component {
         if(this.state.open) return (
           <div className="apps fs with-padding">
           <h1>Another Nothing</h1>
-          <div class="applist">
-          {Object.values(this.state.apps).map(v => <span onClick={() => this.openApp()}>{v.name}</span>)}
+          <div className="applist">
+          {Object.values(this.state.apps).map((v: Apps) => <span onClick={() => this.openApp()}>{v.name}</span>)}
           </div>
           </div>
         )
@@ -93,8 +94,8 @@ class Bar extends Component {
   }
 }
 
-class App extends Component {
-  constructor(props) {
+class App extends Component<{}, {windows: Appp[]}> {
+  constructor(props: {}) {
     super(props)
     this.state = {windows: []}
   }
@@ -126,7 +127,7 @@ class App extends Component {
     this.num+=1
   }
 
-  toggleFull = (o) => {
+  toggleFull = (o: Number) => {
     var f = this.state.windows
     var d = f.findIndex(s => s.id == o);
     f[d].fs = !f[d].fs;
@@ -135,7 +136,7 @@ class App extends Component {
     })
   }
 
-  drag = (o) => {
+  drag = (o: Number) => {
     this.noOneIsAtTheTop()
     var f = this.state.windows
     var d = f.findIndex(s => s.id == o);
@@ -145,7 +146,7 @@ class App extends Component {
     })
   }
 
-  msg = (e, o) => {
+  msg = (e: Event, o: Number) => {
     //TODO: things?
   }
 
