@@ -9,7 +9,8 @@ export interface Win {
   app: Appp,
   full: Function,
   drag: Function,
-  msg: Function
+  msg: Function,
+  close: Function
 }
 
 export interface Apps {

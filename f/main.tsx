@@ -32,7 +32,7 @@ class Window extends Component<Win, {}> {
     disabled={app.fs}
     onStart={() => drag(app.id)}
     >
-    <div className={app.fs ? 'window full' : 'window'} data-at-the-top={app.top.toString()}><div className="windowhandle"><span className="windowbtn"><button><FontAwesomeIcon icon={faTimes} /></button><button onClick={() => full(app.id)}><FontAwesomeIcon icon={faExpandAlt} /></button></span>{app.id}</div><iframe src={"/apps/"+app.app} /></div>
+    <div className={app.fs ? 'window full' : 'window'} data-at-the-top={app.top.toString()}><div className="windowhandle"><span className="windowbtn"><button onClick={() => this.props.close(app.id)}><FontAwesomeIcon icon={faTimes} /></button><button onClick={() => full(app.id)}><FontAwesomeIcon icon={faExpandAlt} /></button></span>{app.id}</div><iframe src={"/apps/"+app.app} /></div>
     </Draggable>
   }
 }
@@ -136,6 +136,12 @@ class App extends Component<{}, {windows: Appp[]}> {
     })
   }
 
+  close = (o: Number) => {
+    this.setState(prev => ({
+      windows: prev.windows.filter(e => e.id !== o)
+    }))
+  }
+
   drag = (o: Number) => {
     this.noOneIsAtTheTop()
     var f = this.state.windows
@@ -153,7 +159,7 @@ class App extends Component<{}, {windows: Appp[]}> {
   render() {
     return (
       <><div className="desktop">
-      {this.state.windows.map((e) => {return <Window app={e} full={this.toggleFull} drag={this.drag} msg={this.msg} />})}
+      {this.state.windows.map((e: Appp) => {return <Window app={e} key={e.id} msg={this.msg} full={this.toggleFull} drag={this.drag} close={this.close} />})}
       <Bar openthing={this.click} />
       </div></>
     )
