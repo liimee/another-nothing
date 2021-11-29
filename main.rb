@@ -66,8 +66,6 @@ class AnotherNothing < AnotherNothingBase
     $users.first(:username => d["user"])[:apps]
   end
 
-  use Faye::RackAdapter, :mount => '/faye', :timeout => 25
-
   def addUser(d)
     $users.insert(:username => d[:name], :password => BCrypt::Password.create(d[:pass]), :apps => '{"welcome": {"name": "Welcome"}}')
     Dir.mkdir("data/#{d[:name]}")

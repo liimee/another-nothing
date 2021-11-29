@@ -13,6 +13,7 @@
       setInterval(() => {
         document.querySelector('#e').innerText = e
         e ++;
+        window.top.postMessage(e)
       }, 1000)
     </script>
   </body>

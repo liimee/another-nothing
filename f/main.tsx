@@ -1,14 +1,47 @@
-import React, { Component, useEffect } from 'react';
+import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faAngleUp, faAngleDown, faTimes, faExpandAlt } from '@fortawesome/free-solid-svg-icons'
 import Draggable from 'react-draggable';
+import { Win, Apps, Appp } from './types';
 
-class Bar extends Component {
+class Window extends Component<Win, {}> {
+  constructor(props: Win) {
+    super(props)
+  }
+
+  componentDidMount() {
+    window.addEventListener('message', this.e)
+  }
+
+  e = (e: Event) => {
+    this.props.msg(e, this.props.app.id)
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('message', this.e)
+  }
+
+  render() {
+    const app = this.props.app;
+    const drag = this.props.drag;
+    const full = this.props.full;
+
+    return <Draggable
+    handle=".windowhandle"
+    disabled={app.fs}
+    onStart={() => drag(app.id)}
+    >
+    <div className={app.fs ? 'window full' : 'window'} data-at-the-top={app.top.toString()}><div className="windowhandle"><span className="windowbtn"><button><FontAwesomeIcon icon={faTimes} /></button><button onClick={() => full(app.id)}><FontAwesomeIcon icon={faExpandAlt} /></button></span>{app.id}</div><iframe src={"/apps/"+app.app} /></div>
+    </Draggable>
+  }
+}
+
+class Bar extends Component<{openthing: Function}, {open: Boolean, apps: {}}> {
   //favorites [apps]?
   //TODO: connected/disconnected status?
 
-  constructor(props) {
+  constructor(props: {openthing: Function}) {
     super(props)
     this.state = {
       open: false,
@@ -25,14 +58,14 @@ class Bar extends Component {
 
   componentDidMount() {
     //useEffect(() => {
-      fetch('/apps')
-      .then(r => {
-        return r.json()
-      }).then((d) => {
-        this.setState({
-          apps: d
-        })
+    fetch('/apps')
+    .then(r => {
+      return r.json()
+    }).then((d) => {
+      this.setState({
+        apps: d
       })
+    })
     //})
   }
 
@@ -50,8 +83,8 @@ class Bar extends Component {
         if(this.state.open) return (
           <div className="apps fs with-padding">
           <h1>Another Nothing</h1>
-          <div class="applist">
-          {Object.values(this.state.apps).map(v => <span onClick={() => this.openApp()}>{v.name}</span>)}
+          <div className="applist">
+          {Object.values(this.state.apps).map((v: Apps) => <span onClick={() => this.openApp()}>{v.name}</span>)}
           </div>
           </div>
         )
@@ -61,8 +94,8 @@ class Bar extends Component {
   }
 }
 
-class App extends Component {
-  constructor(props) {
+class App extends Component<{}, {windows: Appp[]}> {
+  constructor(props: {}) {
     super(props)
     this.state = {windows: []}
   }
@@ -94,7 +127,7 @@ class App extends Component {
     this.num+=1
   }
 
-  toggleFull = (o) => {
+  toggleFull = (o: Number) => {
     var f = this.state.windows
     var d = f.findIndex(s => s.id == o);
     f[d].fs = !f[d].fs;
@@ -103,13 +136,13 @@ class App extends Component {
     })
   }
 
-  close = (o) => {
+  close = (o: Number) => {
     this.setState(prev => ({
       windows: prev.windows.filter(e => e.id !== o)
     }))
   }
 
-  drag = (o) => {
+  drag = (o: Number) => {
     this.noOneIsAtTheTop()
     var f = this.state.windows
     var d = f.findIndex(s => s.id == o);
@@ -119,24 +152,18 @@ class App extends Component {
     })
   }
 
+  msg = (e: Event, o: Number) => {
+    //TODO: things?
+  }
+
   render() {
     return (
       <><div className="desktop">
-      {this.state.windows.map((e) => {return <Window app={e} key={e.id} full={this.toggleFull} drag={this.drag} close={this.close} />})}
+      {this.state.windows.map((e: Appp) => {return <Window app={e} key={e.id} full={this.toggleFull} drag={this.drag} close={this.close} />})}
       <Bar openthing={this.click} />
       </div></>
     )
   }
-}
-
-function Window({app, full, drag, close}) {
-  return <Draggable
-    handle=".windowhandle"
-    disabled={app.fs}
-    onStart={() => drag(app.id)}
-  >
-  <div className={app.fs ? 'window full' : 'window'} data-at-the-top={app.top.toString()}><div className="windowhandle"><span className="windowbtn"><button onClick={() => close(app.id)}><FontAwesomeIcon icon={faTimes} /></button><button onClick={() => full(app.id)}><FontAwesomeIcon icon={faExpandAlt} /></button></span>{app.id}</div><iframe src={"/apps/"+app.app} /></div>
-  </Draggable>
 }
 
 ReactDOM.render(<App />, document.querySelector('#app'))
