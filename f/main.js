@@ -104,12 +104,9 @@ class App extends Component {
   }
 
   close = (o) => {
-    var f = this.state.windows
-    var d = f.findIndex(s => s.id == o);
-    f.splice(d, 1);
-    this.setState({
-      windows: f
-    })
+    this.setState(prev => ({
+      windows: prev.windows.filter(e => e.id !== o)
+    }))
   }
 
   drag = (o) => {
@@ -125,7 +122,7 @@ class App extends Component {
   render() {
     return (
       <><div className="desktop">
-      {this.state.windows.map((e) => {return <Window app={e} full={this.toggleFull} drag={this.drag} close={this.close} />})}
+      {this.state.windows.map((e) => {return <Window app={e} key={e.id} full={this.toggleFull} drag={this.drag} close={this.close} />})}
       <Bar openthing={this.click} />
       </div></>
     )
