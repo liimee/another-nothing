@@ -93,6 +93,7 @@ $users.each {|x|
     get "/apps/#{k}/*" do
       g = checklogin(request)
       halt 403 if g == nil
+      #TODO: another check
       send_file "apps/#{k.downcase}/#{params["splat"].first}"
     end
   }
