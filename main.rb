@@ -89,10 +89,11 @@ set :port, 3000
 
 $users.each {|x|
   s = JSON.parse x[:apps]
-  s.each {|_, v|
-    puts "./apps/#{v["name"].downcase}/index.html"
-    get "/apps/#{v["name"]}/*" do
-      send_file "apps/#{v["name"].downcase}/#{params["splat"].first}"
+  s.each {|k, v|
+    get "/apps/#{k}/*" do
+      g = checklogin(request)
+      halt 403 if g == nil
+      send_file "apps/#{k.downcase}/#{params["splat"].first}"
     end
   }
 }
