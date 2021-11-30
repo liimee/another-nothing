@@ -78,3 +78,5 @@ class AnotherNothing < AnotherNothingBase
 
   set :port, 3000
 end
+
+# html files on build/ can be accesseddddddddddddddddddddd
