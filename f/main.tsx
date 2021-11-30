@@ -30,6 +30,7 @@ class Window extends Component<Win, {}> {
     return <Draggable
     handle=".windowhandle"
     disabled={app.fs}
+    bounds=".desktop"
     onStart={() => drag(app.id)}
     >
     <div className={app.fs ? 'window full' : 'window'} data-at-the-top={app.top.toString()}><div className="windowhandle"><span className="windowbtn"><button onClick={() => this.props.close(app.id)}><FontAwesomeIcon icon={faTimes} /></button><button onClick={() => full(app.id)}><FontAwesomeIcon icon={faExpandAlt} /></button></span>{app.id}</div><iframe src={"/apps/"+app.app+"/index.html"} /></div>
