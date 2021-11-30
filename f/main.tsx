@@ -32,7 +32,7 @@ class Window extends Component<Win, {}> {
     disabled={app.fs}
     onStart={() => drag(app.id)}
     >
-    <div className={app.fs ? 'window full' : 'window'} data-at-the-top={app.top.toString()}><div className="windowhandle"><span className="windowbtn"><button onClick={() => this.props.close(app.id)}><FontAwesomeIcon icon={faTimes} /></button><button onClick={() => full(app.id)}><FontAwesomeIcon icon={faExpandAlt} /></button></span>{app.id}</div><iframe src={"/apps/"+app.app} /></div>
+    <div className={app.fs ? 'window full' : 'window'} data-at-the-top={app.top.toString()}><div className="windowhandle"><span className="windowbtn"><button onClick={() => this.props.close(app.id)}><FontAwesomeIcon icon={faTimes} /></button><button onClick={() => full(app.id)}><FontAwesomeIcon icon={faExpandAlt} /></button></span>{app.id}</div><iframe src={"/apps/"+app.app+"/index.html"} /></div>
     </Draggable>
   }
 }
@@ -116,7 +116,7 @@ class App extends Component<{}, {windows: Appp[]}> {
     console.log(this)
     var d = this.state.windows;
     d.push({
-      app: 'Welcome',
+      app: 'welcome',
       id: this.num,
       fs: false,
       top: true
