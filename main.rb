@@ -94,7 +94,11 @@ $users.each {|x|
       g = checklogin(request)
       halt 403 if g == nil
       #TODO: another check
-      send_file "apps/#{k.downcase}/#{params["splat"].first}"
+      if File.exists?("apps/#{k.downcase}/#{params["splat"].first}")
+        send_file "apps/#{k.downcase}/#{params["splat"].first}"
+      else
+        send_file "apps/#{k.downcase}/index.html"
+      end
     end
   }
 }
