@@ -206,7 +206,7 @@ a:hover, a:focus {
   background-color: #d6d6d6;
 }
 
-.applist .icon {
+.icon {
   width: 2em;
   height: 2em;
   vertical-align: middle;
@@ -215,4 +215,13 @@ a:hover, a:focus {
 .window.full .windowhandle {
   background-color: #f7f7f7;
   border-radius: 4px;
+}
+
+.bar .icon {
+  margin-right: .5em;
+}
+
+.bar .icon:last-child {
+  border-right: solid 2px grey;
+  padding-right: .5em;
 }

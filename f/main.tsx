@@ -38,11 +38,11 @@ class Window extends Component<Win, {}> {
   }
 }
 
-class Bar extends Component<{openthing: Function}, {open: Boolean, apps: {}}> {
+class Bar extends Component<{openthing: Function, w: JSX.Element}, {open: Boolean, apps: {}}> {
   //favorites [apps]?
   //TODO: connected/disconnected status?
 
-  constructor(props: {openthing: Function}) {
+  constructor(props: {openthing: Function, w: JSX.Element}) {
     super(props)
     this.state = {
       open: false,
@@ -79,7 +79,7 @@ class Bar extends Component<{openthing: Function}, {open: Boolean, apps: {}}> {
   render() {
     return (
       <>
-      <div onClick={() => this.toggle()} className="bar">Apps <FontAwesomeIcon icon={this.state.open ? faAngleDown : faAngleUp} /></div>
+      <div onClick={() => this.toggle()} className="bar"><span>{this.props.w}</span> Apps <FontAwesomeIcon icon={this.state.open ? faAngleDown : faAngleUp} /></div>
       {(() => {
         if(this.state.open) return (
           <div className="apps fs with-padding">
@@ -161,7 +161,9 @@ class App extends Component<{}, {windows: Appp[]}> {
     return (
       <><div className="desktop">
       {this.state.windows.map((e: Appp) => {return <Window app={e} key={e.id} msg={this.msg} full={this.toggleFull} drag={this.drag} close={this.close} />})}
-      <Bar openthing={this.click} />
+      <Bar openthing={this.click} w={this.state.windows.map((e) => {
+        return <img className="icon" src={`/apps/${e.app}/icon.svg`} />
+      })}/>
       </div></>
     )
   }
