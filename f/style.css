@@ -159,6 +159,10 @@ a:hover, a:focus {
   border: none;
 }
 
+.windowtitle {
+  margin-left: .5em;
+}
+
 .windowbtn {
   background-color: #f7f7f7;
 }
@@ -200,6 +204,12 @@ a:hover, a:focus {
 
 .applist>span:hover {
   background-color: #d6d6d6;
+}
+
+.applist .icon {
+  width: 2em;
+  height: 2em;
+  vertical-align: middle;
 }
 
 .window.full .windowhandle {

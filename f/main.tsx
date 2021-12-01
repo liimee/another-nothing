@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faAngleUp, faAngleDown, faTimes, faExpandAlt } from '@fortawesome/free-solid-svg-icons'
+import { faAngleUp, faAngleDown, faTimes, faExpandAlt, faCompressAlt } from '@fortawesome/free-solid-svg-icons'
 import Draggable from 'react-draggable';
 import { Win, Apps, Appp } from './types';
 
@@ -33,7 +33,7 @@ class Window extends Component<Win, {}> {
     bounds=".desktop"
     onStart={() => drag(app.id)}
     >
-    <div className={app.fs ? 'window full' : 'window'} data-at-the-top={app.top.toString()}><div className="windowhandle"><span className="windowbtn"><button onClick={() => this.props.close(app.id)}><FontAwesomeIcon icon={faTimes} /></button><button onClick={() => full(app.id)}><FontAwesomeIcon icon={faExpandAlt} /></button></span>{app.id}</div><iframe src={"/apps/"+app.app+"/index.html"} /></div>
+    <div className={app.fs ? 'window full' : 'window'} data-at-the-top={app.top.toString()}><div className="windowhandle"><span className="windowbtn"><button onClick={() => this.props.close(app.id)}><FontAwesomeIcon icon={faTimes} /></button><button onClick={() => full(app.id)}><FontAwesomeIcon icon={app.fs ? faCompressAlt : faExpandAlt} /></button></span><span className="windowtitle">{app.id}</span></div><iframe src={"/apps/"+app.app+"/index.html"} /></div>
     </Draggable>
   }
 }
@@ -85,7 +85,7 @@ class Bar extends Component<{openthing: Function}, {open: Boolean, apps: {}}> {
           <div className="apps fs with-padding">
           <h1>Another Nothing</h1>
           <div className="applist">
-          {Object.values(this.state.apps).map((v: Apps) => <span onClick={() => this.openApp()}>{v.name}</span>)}
+          {Object.keys(this.state.apps).map((v: String) => <span onClick={() => this.openApp()}><img className="icon" src={`/apps/${v}/icon.svg`} /> {this.state.apps[v].name}</span>)}
           </div>
           </div>
         )
