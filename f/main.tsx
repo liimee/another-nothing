@@ -79,13 +79,13 @@ class Bar extends Component<{openthing: Function, w: JSX.Element}, {open: Boolea
   render() {
     return (
       <>
-      <div onClick={() => this.toggle()} className="bar"><span>{this.props.w}</span> Apps <FontAwesomeIcon icon={this.state.open ? faAngleDown : faAngleUp} /></div>
+      <div className="bar"><span>{this.props.w}</span> <span onClick={() => this.toggle()}>Apps <FontAwesomeIcon icon={this.state.open ? faAngleDown : faAngleUp} /></span></div>
       {(() => {
         if(this.state.open) return (
           <div className="apps fs with-padding">
           <h1>Another Nothing</h1>
           <div className="applist">
-          {Object.keys(this.state.apps).map((v: String) => <span onClick={() => this.openApp()}><img className="icon" src={`/apps/${v}/icon.svg`} /> {this.state.apps[v].name}</span>)}
+          {Object.keys(this.state.apps).map((v: String) => <span onClick={() => this.openApp()}><img className="icon" src={`/apps/${v}/icon.svg`} alt={`${this.state.apps[v].name} icon`} /> {this.state.apps[v].name}</span>)}
           </div>
           </div>
         )
@@ -153,6 +153,16 @@ class App extends Component<{}, {windows: Appp[]}> {
     })
   }
 
+  top = (o: Number) => {
+    this.noOneIsAtTheTop();
+    var f = this.state.windows
+    var d = f.findIndex(s => s.id == o);
+    f[d].top = true;
+    this.setState({
+      windows: f
+    })
+  }
+
   msg = (e: Event, o: Number) => {
     //TODO: things?
   }
@@ -162,7 +172,7 @@ class App extends Component<{}, {windows: Appp[]}> {
       <><div className="desktop">
       {this.state.windows.map((e: Appp) => {return <Window app={e} key={e.id} msg={this.msg} full={this.toggleFull} drag={this.drag} close={this.close} />})}
       <Bar openthing={this.click} w={this.state.windows.map((e) => {
-        return <img className="icon" src={`/apps/${e.app}/icon.svg`} />
+        return <img onClick={() => this.top(e.id)} className="icon" src={`/apps/${e.app}/icon.svg`} />
       })}/>
       </div></>
     )
