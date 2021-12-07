@@ -39,8 +39,6 @@ end
 
 $config.insert(:key => "jwt", :value => SecureRandom.hex) if $config.first(:key => "jwt") === nil
 
-set :public_folder, 'build'
-
 get '/' do
   if $users.count < 1
     send_file 'build/adduser.html'
@@ -87,6 +85,11 @@ end
 
 set :port, 3000
 
+get '/:a' do
+  halt 500 if params[:a].end_with? ".html"
+  send_file "build/#{params[:a]}"
+end
+
 $users.each {|x|
   s = JSON.parse x[:apps]
   s.each {|k, v|
@@ -102,5 +105,3 @@ $users.each {|x|
     end
   }
 }
-
-# html files on build/ can be accesseddddddddddddddddddddd
