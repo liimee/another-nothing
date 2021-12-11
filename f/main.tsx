@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faAngleUp, faAngleDown, faTimes, faExpandAlt, faCompressAlt } from '@fortawesome/free-solid-svg-icons'
 import Draggable from 'react-draggable';
-import { Win, Apps, Appp } from './types';
+import { Win, Appp } from './types';
 
 class Window extends Component<Win, {}> {
   constructor(props: Win) {
@@ -38,11 +38,11 @@ class Window extends Component<Win, {}> {
   }
 }
 
-class Bar extends Component<{openthing: Function, w: JSX.Element}, {open: Boolean, apps: {}}> {
+class Bar extends Component<{openthing: Function, w: JSX.Element[]}, {open: Boolean, apps: {}}> {
   //favorites [apps]?
   //TODO: connected/disconnected status?
 
-  constructor(props: {openthing: Function, w: JSX.Element}) {
+  constructor(props: {openthing: Function, w: JSX.Element[]}) {
     super(props)
     this.state = {
       open: false,
@@ -50,11 +50,11 @@ class Bar extends Component<{openthing: Function, w: JSX.Element}, {open: Boolea
     }
   }
 
-  openApp() {
+  openApp(a: String) {
     this.setState({
       open: false
     })
-    this.props.openthing()
+    this.props.openthing(a)
   }
 
   componentDidMount() {
@@ -85,7 +85,7 @@ class Bar extends Component<{openthing: Function, w: JSX.Element}, {open: Boolea
           <div className="apps fs with-padding">
           <h1>Another Nothing</h1>
           <div className="applist">
-          {Object.keys(this.state.apps).map((v: String) => <span onClick={() => this.openApp()}><img className="icon" src={`/apps/${v}/icon.svg`} alt={`${this.state.apps[v].name} icon`} /> {this.state.apps[v].name}</span>)}
+          {Object.keys(this.state.apps).map((v: String) => <span onClick={() => this.openApp(v)}><img className="icon" src={`/apps/${v}/icon.svg`} alt={`${this.state.apps[v].name} icon`} /> {this.state.apps[v].name}</span>)}
           </div>
           </div>
         )
@@ -113,11 +113,11 @@ class App extends Component<{}, {windows: Appp[]}> {
     })
   }
 
-  click = () => {
+  click = (app: String) => {
     console.log(this)
     var d = this.state.windows;
     d.push({
-      app: 'welcome',
+      app,
       id: this.num,
       fs: false,
       top: true
