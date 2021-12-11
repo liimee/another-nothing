@@ -105,3 +105,6 @@ $users.each {|x|
     end
   }
 }
+
+cmd = 'yarn run parcel build apps/welcome/index.html --public-url "/apps/welcome/build" --dist-dir apps/welcome/build'
+system(cmd)
