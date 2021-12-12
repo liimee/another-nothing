@@ -111,9 +111,12 @@ end
 set :port, 3000
 
 get '/install' do
-  #user, app later
-  installApp('a', 'CHEINSTTROARLY', 'CHEINSTTROARLY')
-  buildApp('CHEINSTTROARLY')
+  #use some json file instead for name and stuff?
+  s = checklogin(request)
+  halt 401 if s == nil
+
+  installApp(s["user"], params[:id], params[:name])
+  buildApp(params[:id])
   redirect '/'
 end
 
