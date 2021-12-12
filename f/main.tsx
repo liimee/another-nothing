@@ -10,18 +10,6 @@ class Window extends Component<Win, {}> {
     super(props)
   }
 
-  componentDidMount() {
-    window.addEventListener('message', this.e)
-  }
-
-  e = (e: Event) => {
-    this.props.msg(e, this.props.app.id)
-  }
-
-  componentWillUnmount() {
-    window.removeEventListener('message', this.e)
-  }
-
   render() {
     const app = this.props.app;
     const drag = this.props.drag;
@@ -172,14 +160,10 @@ class App extends Component<{}, {windows: Appp[]}> {
     })
   }
 
-  msg = (e: Event, o: Number) => {
-    //TODO: things?
-  }
-
   render() {
     return (
       <><div className="desktop">
-      {this.state.windows.map((e: Appp) => {return <Window app={e} key={e.id} msg={this.msg} full={this.toggleFull} drag={this.drag} close={this.close} />})}
+      {this.state.windows.map((e: Appp) => {return <Window app={e} key={e.id} full={this.toggleFull} drag={this.drag} close={this.close} />})}
       <Bar openthing={this.click} w={this.state.windows.map((e) => {
         return <img onClick={() => this.top(e.id)} className="icon" src={`/apps/${e.app}/icon.svg`} />
       })}/>
