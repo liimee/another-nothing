@@ -98,10 +98,17 @@ class Bar extends Component<{openthing: Function, w: JSX.Element[]}, {open: Bool
 class App extends Component<{}, {windows: Appp[]}> {
   constructor(props: {}) {
     super(props)
-    this.state = {windows: []}
+    this.state = {windows: [
+      {
+        id: 0,
+        app: 'welcome',
+        fs: false,
+        top: true
+      }
+    ]}
   }
 
-  num = 0;
+  num = 1;
 
   noOneIsAtTheTop = () => {
     var s = this.state.windows;

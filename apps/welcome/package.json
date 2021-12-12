@@ -1,9 +1,5 @@
 {
   "name": "welcome",
   "version": "1.0.0",
-  "license": "MIT",
-  "source": "y",
-  "dependencies": {
-    "is-array": "^1.0.1"
-  }
+  "license": "MIT"
 }

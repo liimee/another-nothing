@@ -4,18 +4,26 @@
     <meta charset="utf-8">
     <title>welcome</title>
     <script src="s/script.js" type="module" charset="utf-8"></script>
-  </head>
-  <body>
-    <div id="e">
+    <style>
+    @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;700&display=swap');
 
-    </div>
-    <script type="text/javascript">
-    var e = 0;
-      setInterval(() => {
-        document.querySelector('#e').innerText = e
-        e ++;
-        window.top.postMessage(e)
-      }, 1000)
-    </script>
+    body {
+      font-family: 'IBM Plex Sans', sans-serif;
+    }
+
+    a {
+      text-decoration: none;
+      color: #044b7f;
+    }
+
+    a:hover, a:focus {
+      text-decoration: underline;
+    }
+    </style>
+  </head>
+  <body style="text-align: center">
+    <img src="icon.svg" style="width: 5em; height: 5em" alt="I need a better icon">
+    <h1 style="margin: 0;">Welcome!</h1>
+    Please use <a href="https://electogenius.github.io/HmmOS">HmmOS</a> instead.
   </body>
 </html>
