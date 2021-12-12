@@ -84,8 +84,11 @@ p, .no-margin {
 }
 
 label {
-  display: block;
   margin: .5em 0;
+}
+
+label:not([for="admin"]) {
+  display: block;
 }
 
 a {

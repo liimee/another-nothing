@@ -14,6 +14,7 @@ db.create_table? :users do
   primary_key String :username
   String :password
   String :apps
+  Boolean :admin
 end
 
 db.create_table? :config do
@@ -51,8 +52,15 @@ get '/' do
   end
 end
 
+get '/addus' do
+  s = checklogin(request)
+  halt 403 if s == nil || !$users.first(:username => s["user"])[:admin]
+  send_file "build/adduser.html"
+end
+
 post '/addus' do
-  if $users.count < 1
+  s = checklogin(request)
+  if $users.count < 1 || s != nil || $users.first(:username => s["user"])[:admin]
     addUser(params)
     response.set_cookie :login, :value => jwt(params[:name])
   end
@@ -67,6 +75,11 @@ post '/login' do
   redirect '/'
 end
 
+get '/logout' do
+  response.set_cookie("login", :max_age => -1)
+  redirect '/'
+end
+
 get '/apps' do
   d = checklogin(request)
   halt 401 unless d != nil
@@ -75,7 +88,7 @@ end
 
 def addUser(d)
   buildApp("welcome")
-  $users.insert(:username => d[:name], :password => BCrypt::Password.create(d[:pass]), :apps => '{"welcome": {"name": "Welcome"}}')
+  $users.insert(:username => d[:name], :password => BCrypt::Password.create(d[:pass]), :apps => '{"welcome": {"name": "Welcome"}}', :admin => d[:admin] != nil)
   Dir.mkdir("data/#{d[:name]}")
 end
 
