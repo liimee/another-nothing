@@ -1,1 +1,2 @@
-console.log("HEY")
+import Y from 'y'
+console.log(Y())

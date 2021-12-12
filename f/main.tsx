@@ -33,7 +33,7 @@ class Window extends Component<Win, {}> {
     bounds=".desktop"
     onStart={() => drag(app.id)}
     >
-    <div className={app.fs ? 'window full' : 'window'} data-at-the-top={app.top.toString()}><div className="windowhandle"><span className="windowbtn"><button onClick={() => this.props.close(app.id)}><FontAwesomeIcon icon={faTimes} /></button><button onClick={() => full(app.id)}><FontAwesomeIcon icon={app.fs ? faCompressAlt : faExpandAlt} /></button></span><span className="windowtitle">{app.title}</span></div><iframe src={"/apps/"+app.app+"/index.html"} /></div>
+    <div className={app.fs ? 'window full' : 'window'} data-at-the-top={app.top.toString()}><div className="windowhandle"><span className="windowbtn"><button onClick={() => this.props.close(app.id)}><FontAwesomeIcon icon={faTimes} /></button><button onClick={() => full(app.id)}><FontAwesomeIcon icon={app.fs ? faCompressAlt : faExpandAlt} /></button></span><span className="windowtitle">{app.title}</span></div><iframe src={"/apps/"+app.app+"/build/index.html"} /></div>
     </Draggable>
   }
 }
@@ -98,10 +98,18 @@ class Bar extends Component<{openthing: Function, w: JSX.Element[]}, {open: Bool
 class App extends Component<{}, {windows: Appp[]}> {
   constructor(props: {}) {
     super(props)
-    this.state = {windows: []}
+    this.state = {windows: [
+      {
+        id: 0,
+        app: 'welcome',
+        fs: false,
+        top: true,
+        title: 'Welcome'
+      }
+    ]}
   }
 
-  num = 0;
+  num = 1;
 
   noOneIsAtTheTop = () => {
     var s = this.state.windows;

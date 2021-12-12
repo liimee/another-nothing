@@ -74,8 +74,20 @@ get '/apps' do
 end
 
 def addUser(d)
+  buildApp("welcome")
   $users.insert(:username => d[:name], :password => BCrypt::Password.create(d[:pass]), :apps => '{"welcome": {"name": "Welcome"}}')
   Dir.mkdir("data/#{d[:name]}")
+end
+
+def installApp(a, d, e)
+  s = $users.first(:username => a)[:apps]
+  s = JSON.parse s
+  s[d] = {
+    name: e
+  }
+
+  d = JSON.generate(s)
+  $users.where(:username => a).update(apps: d)
 end
 
 def jwt(a)
@@ -85,23 +97,55 @@ end
 
 set :port, 3000
 
+get '/install' do
+  #user, app later
+  installApp('a', 'CHEINSTTROARLY', 'CHEINSTTROARLY')
+  buildApp('CHEINSTTROARLY')
+  redirect '/'
+end
+
 get '/:a' do
   halt 500 if params[:a].end_with? ".html"
   send_file "build/#{params[:a]}"
 end
 
-$users.each {|x|
-  s = JSON.parse x[:apps]
-  s.each {|k, v|
-    get "/apps/#{k}/*" do
-      g = checklogin(request)
-      halt 403 if g == nil
-      #TODO: another check
-      if File.exists?("apps/#{k.downcase}/#{params["splat"].first}")
-        send_file "apps/#{k.downcase}/#{params["splat"].first}"
-      else
-        send_file "apps/#{k.downcase}/index.html"
+def buildApp(a)
+  cmd = "yarn run parcel build apps/#{a}/index.html --public-url \"/apps/#{a}/build\" --dist-dir apps/#{a}/build"
+  system(cmd)
+  #start()
+end
+
+get "/apps/:app/*" do
+  g = checklogin(request)
+  halt 403 if g == nil
+
+  k = params[:app]
+  if File.exists?("apps/#{k}/#{params["splat"].first}")
+    send_file "apps/#{k}/#{params["splat"].first}"
+  else
+    send_file "apps/#{k}/build/index.html"
+  end
+end
+
+=begin
+def start()
+  $users.each {|x|
+    s = JSON.parse x[:apps]
+    s.each {|k, v|
+      puts k
+      get "/apps/#{k}/*" do
+        g = checklogin(request)
+        halt 403 if g == nil
+        #TODO: another check
+        if File.exists?("apps/#{k}/#{params["splat"].first}")
+          send_file "apps/#{k}/#{params["splat"].first}"
+        else
+          send_file "apps/#{k}/build/index.html"
+        end
       end
-    end
+    }
   }
-}
+end
+
+start()
+=end
