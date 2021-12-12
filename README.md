@@ -10,6 +10,7 @@ yarn start
 - messy code
 - no i18n
 - poor a11y
+- doesn't support old browsers(?)
 
 if you want a better experience, use [HmmOS](https://electogenius.github.io/HmmOS) instead
 
