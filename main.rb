@@ -112,26 +112,40 @@ end
 def buildApp(a)
   cmd = "yarn run parcel build apps/#{a}/index.html --public-url \"/apps/#{a}/build\" --dist-dir apps/#{a}/build"
   system(cmd)
-  start()
+  #start()
 end
 
+get "/apps/:app/*" do
+  g = checklogin(request)
+  halt 403 if g == nil
+
+  k = params[:app]
+  if File.exists?("apps/#{k}/#{params["splat"].first}")
+    send_file "apps/#{k}/#{params["splat"].first}"
+  else
+    send_file "apps/#{k}/build/index.html"
+  end
+end
+
+=begin
 def start()
-$users.each {|x|
-  s = JSON.parse x[:apps]
-  s.each {|k, v|
-    puts k
-    get "/apps/#{k}/*" do
-      g = checklogin(request)
-      halt 403 if g == nil
-      #TODO: another check
-      if File.exists?("apps/#{k}/#{params["splat"].first}")
-        send_file "apps/#{k}/#{params["splat"].first}"
-      else
-        send_file "apps/#{k}/build/index.html"
+  $users.each {|x|
+    s = JSON.parse x[:apps]
+    s.each {|k, v|
+      puts k
+      get "/apps/#{k}/*" do
+        g = checklogin(request)
+        halt 403 if g == nil
+        #TODO: another check
+        if File.exists?("apps/#{k}/#{params["splat"].first}")
+          send_file "apps/#{k}/#{params["splat"].first}"
+        else
+          send_file "apps/#{k}/build/index.html"
+        end
       end
-    end
+    }
   }
-}
 end
 
 start()
+=end
