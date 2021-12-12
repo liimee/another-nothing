@@ -74,6 +74,7 @@ get '/apps' do
 end
 
 def addUser(d)
+  buildApp("welcome")
   $users.insert(:username => d[:name], :password => BCrypt::Password.create(d[:pass]), :apps => '{"welcome": {"name": "Welcome"}}')
   Dir.mkdir("data/#{d[:name]}")
 end
@@ -96,6 +97,13 @@ end
 
 set :port, 3000
 
+get '/install' do
+  #user, app later
+  installApp('a', 'CHEINSTTROARLY', 'CHEINSTTROARLY')
+  buildApp('CHEINSTTROARLY')
+  redirect '/'
+end
+
 get '/:a' do
   halt 500 if params[:a].end_with? ".html"
   send_file "build/#{params[:a]}"
@@ -104,10 +112,10 @@ end
 def buildApp(a)
   cmd = "yarn run parcel build apps/#{a}/index.html --public-url \"/apps/#{a}/build\" --dist-dir apps/#{a}/build"
   system(cmd)
+  start()
 end
 
-installApp('a', 'CHEINSTTROARLY', 'CHEINSTTROARLY')
-
+def start()
 $users.each {|x|
   s = JSON.parse x[:apps]
   s.each {|k, v|
@@ -124,6 +132,6 @@ $users.each {|x|
     end
   }
 }
+end
 
-buildApp("CHEINSTTROARLY")
-buildApp("welcome")
+start()
