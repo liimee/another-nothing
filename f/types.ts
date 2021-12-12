@@ -2,7 +2,8 @@ export interface Appp {
   app: String,
   id: Number,
   fs: Boolean,
-  top: Boolean
+  top: Boolean,
+  title: String
 }
 
 export interface Win {

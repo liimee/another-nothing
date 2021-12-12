@@ -33,7 +33,7 @@ class Window extends Component<Win, {}> {
     bounds=".desktop"
     onStart={() => drag(app.id)}
     >
-    <div className={app.fs ? 'window full' : 'window'} data-at-the-top={app.top.toString()}><div className="windowhandle"><span className="windowbtn"><button onClick={() => this.props.close(app.id)}><FontAwesomeIcon icon={faTimes} /></button><button onClick={() => full(app.id)}><FontAwesomeIcon icon={app.fs ? faCompressAlt : faExpandAlt} /></button></span><span className="windowtitle">{app.id}</span></div><iframe src={"/apps/"+app.app+"/index.html"} /></div>
+    <div className={app.fs ? 'window full' : 'window'} data-at-the-top={app.top.toString()}><div className="windowhandle"><span className="windowbtn"><button onClick={() => this.props.close(app.id)}><FontAwesomeIcon icon={faTimes} /></button><button onClick={() => full(app.id)}><FontAwesomeIcon icon={app.fs ? faCompressAlt : faExpandAlt} /></button></span><span className="windowtitle">{app.title}</span></div><iframe src={"/apps/"+app.app+"/index.html"} /></div>
     </Draggable>
   }
 }
@@ -50,11 +50,11 @@ class Bar extends Component<{openthing: Function, w: JSX.Element[]}, {open: Bool
     }
   }
 
-  openApp(a: String) {
+  openApp(a: String, b: String) {
     this.setState({
       open: false
     })
-    this.props.openthing(a)
+    this.props.openthing(a, b)
   }
 
   componentDidMount() {
@@ -85,7 +85,7 @@ class Bar extends Component<{openthing: Function, w: JSX.Element[]}, {open: Bool
           <div className="apps fs with-padding">
           <h1>Another Nothing</h1>
           <div className="applist">
-          {Object.keys(this.state.apps).map((v: String) => <span onClick={() => this.openApp(v)}><img className="icon" src={`/apps/${v}/icon.svg`} alt={`${this.state.apps[v].name} icon`} /> {this.state.apps[v].name}</span>)}
+          {Object.keys(this.state.apps).map((v: String) => <span onClick={() => this.openApp(v, this.state.apps[v].name)}><img className="icon" src={`/apps/${v}/icon.svg`} alt={`${this.state.apps[v].name} icon`} /> {this.state.apps[v].name}</span>)}
           </div>
           </div>
         )
@@ -113,14 +113,15 @@ class App extends Component<{}, {windows: Appp[]}> {
     })
   }
 
-  click = (app: String) => {
+  click = (app: String, t: String) => {
     console.log(this)
     var d = this.state.windows;
     d.push({
       app,
       id: this.num,
       fs: false,
-      top: true
+      top: true,
+      title: t
     });
     this.setState({
       windows: d
