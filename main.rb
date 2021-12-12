@@ -125,12 +125,11 @@ end
 def buildApp(a)
   cmd = "yarn run parcel build apps/#{a}/index.html --public-url \"/apps/#{a}/build\" --dist-dir apps/#{a}/build"
   system(cmd)
-  #start()
 end
 
 get "/apps/:app/*" do
   g = checklogin(request)
-  halt 403 if g == nil
+  halt 403 if g == nil || !JSON.parse($users.first(:username => g["user"])[:apps]).include?(params[:app])
 
   k = params[:app]
   if File.exists?("apps/#{k}/#{params["splat"].first}")
@@ -139,29 +138,6 @@ get "/apps/:app/*" do
     send_file "apps/#{k}/build/index.html"
   end
 end
-
-=begin
-def start()
-  $users.each {|x|
-    s = JSON.parse x[:apps]
-    s.each {|k, v|
-      puts k
-      get "/apps/#{k}/*" do
-        g = checklogin(request)
-        halt 403 if g == nil
-        #TODO: another check
-        if File.exists?("apps/#{k}/#{params["splat"].first}")
-          send_file "apps/#{k}/#{params["splat"].first}"
-        else
-          send_file "apps/#{k}/build/index.html"
-        end
-      end
-    }
-  }
-end
-
-start()
-=end
 
 $users.each {|x|
   s = JSON.parse x[:apps]
