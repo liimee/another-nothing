@@ -162,3 +162,10 @@ end
 
 start()
 =end
+
+$users.each {|x|
+  s = JSON.parse x[:apps]
+  s.each {|k, v|
+    buildApp(k)
+  }
+}
