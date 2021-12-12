@@ -78,6 +78,17 @@ def addUser(d)
   Dir.mkdir("data/#{d[:name]}")
 end
 
+def installApp(a, d, e)
+  s = $users.first(:username => a)[:apps]
+  s = JSON.parse s
+  s[d] = {
+    name: e
+  }
+
+  d = JSON.generate(s)
+  $users.where(:username => a).update(apps: d)
+end
+
 def jwt(a)
   p = { user: a, iat: Time.now.to_i }
   JWT.encode(p, "#{$config.first(:key => "jwt")}", 'HS256')
@@ -90,21 +101,29 @@ get '/:a' do
   send_file "build/#{params[:a]}"
 end
 
+def buildApp(a)
+  cmd = "yarn run parcel build apps/#{a}/index.html --public-url \"/apps/#{a}/build\" --dist-dir apps/#{a}/build"
+  system(cmd)
+end
+
+installApp('a', 'CHEINSTTROARLY', 'CHEINSTTROARLY')
+
 $users.each {|x|
   s = JSON.parse x[:apps]
   s.each {|k, v|
+    puts k
     get "/apps/#{k}/*" do
       g = checklogin(request)
       halt 403 if g == nil
       #TODO: another check
-      if File.exists?("apps/#{k.downcase}/#{params["splat"].first}")
-        send_file "apps/#{k.downcase}/#{params["splat"].first}"
+      if File.exists?("apps/#{k}/#{params["splat"].first}")
+        send_file "apps/#{k}/#{params["splat"].first}"
       else
-        send_file "apps/#{k.downcase}/index.html"
+        send_file "apps/#{k}/build/index.html"
       end
     end
   }
 }
 
-cmd = 'yarn run parcel build apps/welcome/index.html --public-url "/apps/welcome/build" --dist-dir apps/welcome/build'
-system(cmd)
+buildApp("CHEINSTTROARLY")
+buildApp("welcome")
