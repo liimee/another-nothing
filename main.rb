@@ -52,6 +52,21 @@ get '/' do
   end
 end
 
+$cns = []
+get '/things' do
+  d = checklogin(request)
+  halt 401 unless d != nil
+  content_type "text/event-stream"
+  stream(:keep_open) do |out|
+    $cns.push([
+      d["user"],
+      out
+    ])
+
+    evs('apps', $users.first(:username => d["user"])[:apps], d["user"])
+  end
+end
+
 get '/addus' do
   s = checklogin(request)
   halt 403 if s == nil || !$users.first(:username => s["user"])[:admin]
@@ -80,12 +95,6 @@ get '/logout' do
   redirect '/'
 end
 
-get '/apps' do
-  d = checklogin(request)
-  halt 401 unless d != nil
-  $users.first(:username => d["user"])[:apps]
-end
-
 def addUser(d)
   buildApp("welcome")
   $users.insert(:username => d[:name], :password => BCrypt::Password.create(d[:pass]), :apps => '{"welcome": {"name": "Welcome"}}', :admin => d[:admin] != nil)
@@ -101,6 +110,27 @@ def installApp(a, d, e)
 
   d = JSON.generate(s)
   $users.where(:username => a).update(apps: d)
+
+  evs('apps', d, a)
+end
+
+def evs(a, b, c=nil)
+  if c == nil
+    $cns.each do |e|
+      e[1] << "event: #{a}\n"
+      e[1] << "data: #{b}"
+      e[1] << "\n\n"
+    end
+  else
+    s = $cns.reject {|n|
+      n[0] != c
+    }
+    s.each do |e|
+      e[1] << "event: #{a}\n"
+      e[1] << "data: #{b}"
+      e[1] << "\n\n"
+    end
+  end
 end
 
 def jwt(a)

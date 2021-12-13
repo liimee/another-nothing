@@ -5,6 +5,8 @@ import { faAngleUp, faAngleDown, faTimes, faExpandAlt, faCompressAlt } from '@fo
 import Draggable from 'react-draggable';
 import { Win, Appp } from './types';
 
+var evs = new EventSource('/things');
+
 class Window extends Component<Win, {}> {
   constructor(props: Win) {
     super(props)
@@ -38,24 +40,19 @@ class Bar extends Component<{openthing: Function, w: JSX.Element[]}, {open: Bool
     }
   }
 
+  componentDidMount() {
+    evs.addEventListener('apps', (f: MessageEvent) => {
+      this.setState({
+        apps: JSON.parse(f.data)
+      })
+    });
+  }
+
   openApp(a: String, b: String) {
     this.setState({
       open: false
     })
     this.props.openthing(a, b)
-  }
-
-  componentDidMount() {
-    //useEffect(() => {
-    fetch('/apps')
-    .then(r => {
-      return r.json()
-    }).then((d) => {
-      this.setState({
-        apps: d
-      })
-    })
-    //})
   }
 
   toggle() {
