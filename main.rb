@@ -4,6 +4,9 @@ require 'bcrypt'
 require 'jwt'
 require 'securerandom'
 require 'sinatra'
+require_relative 'rainbows'
+
+set :server, :rainbows
 
 Dir.mkdir 'data' unless File.exist? 'data'
 Dir.mkdir 'apps' unless File.exist? 'apps'
