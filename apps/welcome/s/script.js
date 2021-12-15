@@ -1,2 +1,1 @@
-import Y from 'y'
-console.log(Y())
+console.log('e')
