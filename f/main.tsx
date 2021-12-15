@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faAngleUp, faAngleDown, faTimes, faExpandAlt, faCompressAlt } from '@fortawesome/free-solid-svg-icons'
+import { faAngleUp, faAngleDown, faTimes, faExpandAlt, faCompressAlt, faWifi } from '@fortawesome/free-solid-svg-icons'
 import Draggable from 'react-draggable';
 import { Win, Appp } from './types';
 
@@ -28,7 +28,7 @@ class Window extends Component<Win, {}> {
   }
 }
 
-class Bar extends Component<{openthing: Function, w: JSX.Element[]}, {open: Boolean, apps: {}}> {
+class Bar extends Component<{openthing: Function, w: JSX.Element[]}, {open: Boolean, apps: {}, c: Boolean}> {
   //favorites [apps]?
   //TODO: connected/disconnected status?
 
@@ -36,7 +36,8 @@ class Bar extends Component<{openthing: Function, w: JSX.Element[]}, {open: Bool
     super(props)
     this.state = {
       open: false,
-      apps: {}
+      apps: {},
+      c: false
     }
   }
 
@@ -46,6 +47,18 @@ class Bar extends Component<{openthing: Function, w: JSX.Element[]}, {open: Bool
         apps: JSON.parse(f.data)
       })
     });
+
+    evs.addEventListener('open', () => {
+      this.setState({
+        c: true
+      })
+    })
+
+    evs.addEventListener('error', () => {
+      this.setState({
+        c: false
+      })
+    })
   }
 
   openApp(a: String, b: String) {
@@ -64,7 +77,7 @@ class Bar extends Component<{openthing: Function, w: JSX.Element[]}, {open: Bool
   render() {
     return (
       <>
-      <div className="bar"><span>{this.props.w}</span> <span onClick={() => this.toggle()}>Apps <FontAwesomeIcon icon={this.state.open ? faAngleDown : faAngleUp} /></span></div>
+      <div className="bar"><span title={this.state.c ? 'Server-sent events should be received properly' : 'Server-sent events may not be received'} style={{display: 'inline-block', backgroundColor: this.state.c ? 'green' : 'red', padding: '1em', color: '#fff', borderBottomLeftRadius: '8px', borderTopLeftRadius: '8px'}}><FontAwesomeIcon icon={faWifi} /></span><span>{this.props.w}</span> <span onClick={() => this.toggle()} style={{display: 'inline-block', padding: '1em'}}>Apps <FontAwesomeIcon icon={this.state.open ? faAngleDown : faAngleUp} /></span></div>
       {(() => {
         if(this.state.open) return (
           <div className="apps fs with-padding">

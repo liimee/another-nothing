@@ -116,7 +116,7 @@ a:hover, a:focus {
 
 .bar {
   font-weight: bold;
-  padding: .8em;
+  /*padding: .8em;*/
   position: fixed;
   font-size: 1.2em;
   bottom: 2em;
@@ -229,6 +229,5 @@ a:hover, a:focus {
 }
 
 .bar .icon:last-child {
-  margin-right: .5em;
   border-right: solid 2px grey;
 }
