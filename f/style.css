@@ -197,18 +197,21 @@ a:hover, a:focus {
   position: fixed;
 }
 
-.applist {
+.tippy-box {
   display: flex;
   flex-wrap: wrap;
+  height: 31vh;
+  width: 19vw;
+  overflow-y: auto;
 }
 
-.applist>span {
-  margin: .8em;
+.tippy-box span {
+  margin: 1.3em;
   padding: 1em;
   border-radius: 7px;
 }
 
-.applist>span:hover, .bar .icon:hover {
+.tippy-box span:hover, .bar>span>.icon:hover {
   background-color: #d6d6d6;
 }
 
@@ -229,12 +232,33 @@ a:hover, a:focus {
   text-overflow: ellipsis;
 }
 
-.bar .icon {
+.bar>span>.icon {
   width: 1.5em;
   height: 1.5em;
-  padding: .5em;
+  padding: .5em 1em;
 }
 
-.bar .icon:last-child {
+.bar>span>.icon:last-child {
   border-right: solid 2px grey;
 }
+
+.tippy-box[data-theme~='light'] {
+  background-color: #fff;
+  color: #000;
+  padding: 1em;
+  border-radius: 6px;
+}
+/*
+.tippy-box[data-theme~='light'][data-placement^='top'] > .tippy-arrow::before {
+  border-top-color: tomato;
+}
+.tippy-box[data-theme~='light'][data-placement^='bottom'] > .tippy-arrow::before {
+  border-bottom-color: tomato;
+}
+.tippy-box[data-theme~='light'][data-placement^='left'] > .tippy-arrow::before {
+  border-left-color: tomato;
+}
+.tippy-box[data-theme~='light'][data-placement^='right'] > .tippy-arrow::before {
+  border-right-color: tomato;
+}
+*/

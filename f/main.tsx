@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faAngleUp, faAngleDown, faTimes, faExpandAlt, faCompressAlt, faWifi } from '@fortawesome/free-solid-svg-icons'
+import { faArrowUp, faSignOutAlt, faTimes, faExpandAlt, faCompressAlt, faWifi } from '@fortawesome/free-solid-svg-icons'
 import Draggable from 'react-draggable';
 import { Win, Appp } from './types';
+import Tippy from '@tippyjs/react';
+import 'tippy.js/dist/tippy.css';
 
 var evs = new EventSource('/things');
 
@@ -38,14 +40,13 @@ class Window extends Component<Win, {}> {
   }
 }
 
-class Bar extends Component<{openthing: Function, w: JSX.Element[]}, {open: Boolean, apps: {}, c: Boolean}> {
+class Bar extends Component<{openthing: Function, w: JSX.Element[]}, {apps: {}, c: Boolean}> {
   //favorites [apps]?
   //TODO: connected/disconnected status?
 
   constructor(props: {openthing: Function, w: JSX.Element[]}) {
     super(props)
     this.state = {
-      open: false,
       apps: {},
       c: false
     }
@@ -72,32 +73,15 @@ class Bar extends Component<{openthing: Function, w: JSX.Element[]}, {open: Bool
   }
 
   openApp(a: String, b: String) {
-    this.setState({
-      open: false
-    })
     this.props.openthing(a, b)
-  }
-
-  toggle() {
-    this.setState({
-      open: !this.state.open
-    })
   }
 
   render() {
     return (
       <>
-      <div className="bar"><span title={this.state.c ? 'Server-sent events should be received properly' : 'Server-sent events may not be received'} style={{display: 'inline-block', backgroundColor: this.state.c ? 'var(--color4)' : 'var(--color2)', padding: '1em', color: '#fff', borderBottomLeftRadius: '6px', borderTopLeftRadius: '6px'}}><FontAwesomeIcon icon={faWifi} /></span><span>{this.props.w}</span><span onClick={() => this.toggle()} style={{display: 'inline-block', padding: '1em'}}>Apps <FontAwesomeIcon icon={this.state.open ? faAngleDown : faAngleUp} /></span></div>
-      {(() => {
-        if(this.state.open) return (
-          <div className="apps fs with-padding">
-          <h1>Another Nothing</h1>
-          <div className="applist">
-          {Object.keys(this.state.apps).map((v) => <span onClick={() => this.openApp(v, this.state.apps[v].name)}><img className="icon" src={`/apps/${v}/icon.svg`} alt={`${this.state.apps[v].name} icon`} /> {this.state.apps[v].name}</span>)}
-          </div>
-          </div>
-        )
-      })()}
+      <div className="bar"><span title={this.state.c ? 'Server-sent events should be received properly' : 'Server-sent events may not be received'} style={{display: 'inline-block', backgroundColor: this.state.c ? 'var(--color4)' : 'var(--color2)', padding: '1em', color: '#fff', borderBottomLeftRadius: '6px', borderTopLeftRadius: '6px'}}><FontAwesomeIcon icon={faWifi} /></span><span>{this.props.w}</span><Tippy content={
+        <><div><b>another nothing <a href='/logout' title='sign out' style={{float: 'right'}}><FontAwesomeIcon icon={faSignOutAlt} /></a></b></div><h2 style={{marginTop: 0.5}}>apps</h2> {Object.keys(this.state.apps).map((v) => <span onClick={() => this.openApp(v, this.state.apps[v].name)}><img className="icon" src={`/apps/${v}/icon.svg`} alt={`${this.state.apps[v].name} icon`} /> {this.state.apps[v].name}</span>)}</>
+      } arrow={false} theme="light" interactive={true}><span onClick={() => this.toggle()} style={{display: 'inline-block', padding: '1em'}}><FontAwesomeIcon icon={faArrowUp} /></span></Tippy></div>
       </>
     )
   }
