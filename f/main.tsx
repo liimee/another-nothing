@@ -77,7 +77,7 @@ class Bar extends Component<{openthing: Function, w: JSX.Element[]}, {open: Bool
   render() {
     return (
       <>
-      <div className="bar"><span title={this.state.c ? 'Server-sent events should be received properly' : 'Server-sent events may not be received'} style={{display: 'inline-block', backgroundColor: this.state.c ? 'green' : 'red', padding: '1em', color: '#fff', borderBottomLeftRadius: '8px', borderTopLeftRadius: '8px'}}><FontAwesomeIcon icon={faWifi} /></span><span>{this.props.w}</span> <span onClick={() => this.toggle()} style={{display: 'inline-block', padding: '1em'}}>Apps <FontAwesomeIcon icon={this.state.open ? faAngleDown : faAngleUp} /></span></div>
+      <div className="bar"><span title={this.state.c ? 'Server-sent events should be received properly' : 'Server-sent events may not be received'} style={{display: 'inline-block', backgroundColor: this.state.c ? 'green' : 'red', padding: '1em', color: '#fff', borderBottomLeftRadius: '8px', borderTopLeftRadius: '8px'}}><FontAwesomeIcon icon={faWifi} /></span><span>{this.props.w}</span><span onClick={() => this.toggle()} style={{display: 'inline-block', padding: '1em'}}>Apps <FontAwesomeIcon icon={this.state.open ? faAngleDown : faAngleUp} /></span></div>
       {(() => {
         if(this.state.open) return (
           <div className="apps fs with-padding">
