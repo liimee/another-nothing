@@ -15,7 +15,7 @@ class Window extends Component<Win, {}> {
   lo = (e) => {
     let channel = new MessageChannel();
     let port1 = channel.port1;
-    e.target.contentWindow.postMessage({ name: 'init' }, '*', [channel.port2]);
+    e.target.contentWindow.postMessage({ do: 'init' }, '*', [channel.port2]);
     port1.onmessage = (e) => {
       console.log(e)
       this.props.msg(e, this.props.app.id)
