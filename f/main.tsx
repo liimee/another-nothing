@@ -89,13 +89,13 @@ class Bar extends Component<{openthing: Function, w: JSX.Element[]}, {open: Bool
   render() {
     return (
       <>
-      <div className="bar"><span title={this.state.c ? 'Server-sent events should be received properly' : 'Server-sent events may not be received'} style={{display: 'inline-block', backgroundColor: this.state.c ? 'green' : 'red', padding: '1em', color: '#fff', borderBottomLeftRadius: '8px', borderTopLeftRadius: '8px'}}><FontAwesomeIcon icon={faWifi} /></span><span>{this.props.w}</span><span onClick={() => this.toggle()} style={{display: 'inline-block', padding: '1em'}}>Apps <FontAwesomeIcon icon={this.state.open ? faAngleDown : faAngleUp} /></span></div>
+      <div className="bar"><span title={this.state.c ? 'Server-sent events should be received properly' : 'Server-sent events may not be received'} style={{display: 'inline-block', backgroundColor: this.state.c ? 'var(--color4)' : 'var(--color2)', padding: '1em', color: '#fff', borderBottomLeftRadius: '8px', borderTopLeftRadius: '8px'}}><FontAwesomeIcon icon={faWifi} /></span><span>{this.props.w}</span><span onClick={() => this.toggle()} style={{display: 'inline-block', padding: '1em'}}>Apps <FontAwesomeIcon icon={this.state.open ? faAngleDown : faAngleUp} /></span></div>
       {(() => {
         if(this.state.open) return (
           <div className="apps fs with-padding">
           <h1>Another Nothing</h1>
           <div className="applist">
-          {Object.keys(this.state.apps).map((v: String) => <span onClick={() => this.openApp(v, this.state.apps[v].name)}><img className="icon" src={`/apps/${v}/icon.svg`} alt={`${this.state.apps[v].name} icon`} /> {this.state.apps[v].name}</span>)}
+          {Object.keys(this.state.apps).map((v) => <span onClick={() => this.openApp(v, this.state.apps[v].name)}><img className="icon" src={`/apps/${v}/icon.svg`} alt={`${this.state.apps[v].name} icon`} /> {this.state.apps[v].name}</span>)}
           </div>
           </div>
         )
