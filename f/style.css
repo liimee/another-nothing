@@ -197,7 +197,7 @@ a:hover, a:focus {
   position: fixed;
 }
 
-.tippy-box {
+.tippy-box[data-theme~='light'] {
   display: flex;
   flex-wrap: wrap;
   height: 31vh;
@@ -205,13 +205,13 @@ a:hover, a:focus {
   overflow-y: auto;
 }
 
-.tippy-box span {
+.tippy-box[data-theme~='light'] span {
   margin: 1.3em;
   padding: 1em;
   border-radius: 7px;
 }
 
-.tippy-box span:hover, .bar>span>.icon:hover {
+.tippy-box[data-theme~='light'] span:hover, .bar>span>.icon:hover {
   background-color: #d6d6d6;
 }
 
