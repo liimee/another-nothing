@@ -118,21 +118,12 @@ def installApp(a, d, e)
 end
 
 def evs(a, b, c=nil)
-  if c == nil
-    $cns.each do |e|
-      e[1] << "event: #{a}\n"
-      e[1] << "data: #{b}"
-      e[1] << "\n\n"
-    end
-  else
-    s = $cns.reject {|n|
-      n[0] != c
-    }
-    s.each do |e|
-      e[1] << "event: #{a}\n"
-      e[1] << "data: #{b}"
-      e[1] << "\n\n"
-    end
+  s = $cns
+  s.reject! { |n| n[0] != c } if c != nil
+  s.each do |e|
+    e[1] << "event: #{a}\n"
+    e[1] << "data: #{b}"
+    e[1] << "\n\n"
   end
 end
 
