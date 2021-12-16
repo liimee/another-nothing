@@ -60,3 +60,7 @@ class App extends Component {
 }
 
 ReactDOM.render(<App />, document.querySelector('#app'))
+
+window.addEventListener('message', (e) => {
+  e.ports[0].postMessage('close')
+});

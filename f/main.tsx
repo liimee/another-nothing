@@ -12,6 +12,18 @@ class Window extends Component<Win, {}> {
     super(props)
   }
 
+  lo = (e) => {
+    let channel = new MessageChannel();
+    let port1 = channel.port1;
+    e.target.contentWindow.postMessage({ name: 'init' }, '*', [channel.port2]);
+    port1.onmessage = (e) => {
+      console.log(e)
+      if(e.data == 'close') {
+        this.props.close(this.props.app.id)
+      }
+    };
+  }
+
   render() {
     const app = this.props.app;
     const drag = this.props.drag;
@@ -23,7 +35,7 @@ class Window extends Component<Win, {}> {
     bounds=".desktop"
     onStart={() => drag(app.id)}
     >
-    <div className={app.fs ? 'window full' : 'window'} data-at-the-top={app.top.toString()}><div className="windowhandle"><span className="windowbtn"><button onClick={() => this.props.close(app.id)}><FontAwesomeIcon icon={faTimes} /></button><button onClick={() => full(app.id)}><FontAwesomeIcon icon={app.fs ? faCompressAlt : faExpandAlt} /></button></span><span className="windowtitle">{app.title}</span></div><iframe src={"/apps/"+app.app+"/build/index.html"} /></div>
+    <div className={app.fs ? 'window full' : 'window'} data-at-the-top={app.top.toString()}><div className="windowhandle"><span className="windowbtn"><button onClick={() => this.props.close(app.id)}><FontAwesomeIcon icon={faTimes} /></button><button onClick={() => full(app.id)}><FontAwesomeIcon icon={app.fs ? faCompressAlt : faExpandAlt} /></button></span><span className="windowtitle">{app.title}</span></div><iframe onLoad={this.lo} src={"/apps/"+app.app+"/build/index.html"} /></div>
     </Draggable>
   }
 }
