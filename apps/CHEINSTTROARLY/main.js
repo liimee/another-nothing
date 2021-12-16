@@ -1,6 +1,15 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 
+var e;
+window.addEventListener('message', (v) => {
+  e = v.ports[0]
+  e.postMessage({
+    do: 'title',
+    val: `${title[0]} − ${part[0]} − CHEINSTTROARLY`
+  })
+});
+
 var book = [
   'Believed to be the start of all time<br />There is a person who once existed. He created -1. And -1 was the world. -1 is the world. -1 is all. Soon afterwards, these two, Petrichor and -1, grew bored of there being only two people. So -1 created something. Something small. Something puny. He created mortals. These mortals lacked the omnipotence of their creator, and of their creator\'s creator. -1 provided for them all they needed. Even a computer. However, this computer had small memory. The first Apple computer had just one byte. Then everything crashed. Soon, the creators slept for many thousands of years.',
   'Believed to be the mortal discovery of the book of CHEINSTTROARLY<br />But first, Petrichor chose to drop a book down to the world that is his creation. -1 blessed the book with a beautiful jungle around it, and the mortals saw this. The mortals came to the jungle and found the book of CHEINSTTROARLY. However, English would not be invented for thousands of years so they buried it in a ditch.',
@@ -54,13 +63,16 @@ class App extends Component {
     }
   }
 
+  componentDidUpdate() {
+    e.postMessage({
+      do: 'title',
+      val: `${title[this.state.page]} − ${part[this.state.page]} − CHEINSTTROARLY`
+    })
+  }
+
   render() {
     return <><h2>{title[this.state.page]}</h2><h4>{part[this.state.page]}</h4><div style={{textAlign: 'justify'}} dangerouslySetInnerHTML={{__html: book[this.state.page]}} /><button disabled={this.state.page == 0} onClick={() => this.setState({ page: this.state.page-1 })}>Prev</button><button disabled={this.state.page == book.length-1} onClick={() => this.setState({ page: this.state.page+1 })}>Next</button></>
   }
 }
 
 ReactDOM.render(<App />, document.querySelector('#app'))
-
-window.addEventListener('message', (e) => {
-  e.ports[0].postMessage('close')
-});

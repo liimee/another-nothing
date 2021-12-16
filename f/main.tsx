@@ -18,9 +18,7 @@ class Window extends Component<Win, {}> {
     e.target.contentWindow.postMessage({ name: 'init' }, '*', [channel.port2]);
     port1.onmessage = (e) => {
       console.log(e)
-      if(e.data == 'close') {
-        this.props.close(this.props.app.id)
-      }
+      this.props.msg(e, this.props.app.id)
     };
   }
 
@@ -182,12 +180,27 @@ class App extends Component<{}, {windows: Appp[]}> {
     })
   }
 
+  msg = (e: MessageEvent, i: Number) => {
+    switch(e.data.do) {
+      case 'title':
+      var f = this.state.windows
+      var d = f.findIndex(s => s.id == i);
+      f[d].title = e.data.val;
+      this.setState({
+        windows: f
+      });
+      break;
+      case 'close':
+      this.close(i)
+    }
+  }
+
   render() {
     return (
       <><div className="desktop">
-      {this.state.windows.map((e: Appp) => {return <Window app={e} key={e.id} full={this.toggleFull} drag={this.drag} close={this.close} />})}
+      {this.state.windows.map((e: Appp) => {return <Window app={e} key={e.id} full={this.toggleFull} drag={this.drag} close={this.close} msg={this.msg} />})}
       <Bar openthing={this.click} w={this.state.windows.map((e) => {
-        return <img onClick={() => this.top(e.id)} className="icon" src={`/apps/${e.app}/icon.svg`} />
+        return <img onClick={() => this.top(e.id)} className="icon" src={`/apps/${e.app}/icon.svg`} title={e.title} />
       })}/>
       </div></>
     )
