@@ -183,7 +183,7 @@ class App extends Component<{}, {windows: Appp[]}> {
       <><div className="desktop">
       {this.state.windows.map((e: Appp) => {return <Window app={e} key={e.id} full={this.toggleFull} drag={this.drag} close={this.close} msg={this.msg} />})}
       <Bar openthing={this.click} w={this.state.windows.map((e) => {
-        return <Tippy content={e.title} delay={[300, 100]}><img onClick={() => this.top(e.id)} className="icon" src={`/apps/${e.app}/icon.svg`} /></Tippy>
+        return <Tippy content={e.title} arrow={false} delay={[300, 100]}><img onClick={() => this.top(e.id)} className="icon" src={`/apps/${e.app}/icon.svg`} /></Tippy>
       })}/>
       </div></>
     )
