@@ -79,8 +79,8 @@ class Bar extends Component<{openthing: Function, w: JSX.Element[]}, {apps: {}, 
   render() {
     return (
       <>
-      <div className="bar"><Tippy content={this.state.c ? 'Server-sent events should be received properly' : 'Server-sent events may not be received'}><span style={{display: 'inline-block', backgroundColor: this.state.c ? 'var(--color4)' : 'var(--color2)', padding: '1em', color: '#fff', borderBottomLeftRadius: '6px', borderTopLeftRadius: '6px'}}><FontAwesomeIcon icon={faWifi} /></span></Tippy><span>{this.props.w}</span><Tippy content={
-        <><div><b>another nothing <a href='/logout' title='sign out' style={{float: 'right'}}><FontAwesomeIcon icon={faSignOutAlt} /></a></b></div><h2 style={{marginTop: 0.5}}>apps</h2> {Object.keys(this.state.apps).map((v) => <span onClick={() => this.openApp(v, this.state.apps[v].name)}><img className="icon" src={`/apps/${v}/icon.svg`} alt={`${this.state.apps[v].name} icon`} /> {this.state.apps[v].name}</span>)}</>
+      <div className="bar"><Tippy placement='top-start' content={this.state.c ? 'Server-sent events should be received properly' : 'Server-sent events may not be received'}><span style={{display: 'inline-block', backgroundColor: this.state.c ? 'var(--color4)' : 'var(--color2)', padding: '1em', color: '#fff', borderBottomLeftRadius: '6px', borderTopLeftRadius: '6px'}}><FontAwesomeIcon icon={faWifi} /></span></Tippy><span>{this.props.w}</span><Tippy content={
+        <><div><b>another nothing <Tippy placement='top-end' content='sign out'><a href='/logout' style={{float: 'right'}}><FontAwesomeIcon icon={faSignOutAlt} /></a></Tippy></b></div><h2 style={{marginTop: 0.5}}>apps</h2> {Object.keys(this.state.apps).map((v) => <span onClick={() => this.openApp(v, this.state.apps[v].name)}><img className="icon" src={`/apps/${v}/icon.svg`} alt={`${this.state.apps[v].name} icon`} /> {this.state.apps[v].name}</span>)}</>
       } arrow={false} theme="light" interactive={true}><span onClick={() => this.toggle()} style={{display: 'inline-block', padding: '1em'}}><FontAwesomeIcon icon={faArrowUp} /></span></Tippy></div>
       </>
     )
@@ -184,7 +184,7 @@ class App extends Component<{}, {windows: Appp[]}> {
       <><div className="desktop">
       {this.state.windows.map((e: Appp) => {return <Window app={e} key={e.id} full={this.toggleFull} drag={this.drag} close={this.close} msg={this.msg} />})}
       <Bar openthing={this.click} w={this.state.windows.map((e) => {
-        return <Tippy content={e.title}><img onClick={() => this.top(e.id)} className="icon" src={`/apps/${e.app}/icon.svg`} /></Tippy>
+        return <Tippy content={e.title} delay={[300, 100]}><img onClick={() => this.top(e.id)} className="icon" src={`/apps/${e.app}/icon.svg`} /></Tippy>
       })}/>
       </div></>
     )
