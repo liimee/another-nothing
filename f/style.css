@@ -217,6 +217,10 @@ a:hover, a:focus {
   background-color: #d6d6d6;
 }
 
+.tippy-box[data-theme~='light'] .tippy-content {
+  width: 100%;
+}
+
 .icon {
   width: 2em;
   height: 2em;
