@@ -42,7 +42,6 @@ class Window extends Component<Win, {}> {
 
 class Bar extends Component<{openthing: Function, w: JSX.Element[]}, {apps: {}, c: Boolean}> {
   //favorites [apps]?
-  //TODO: connected/disconnected status?
 
   constructor(props: {openthing: Function, w: JSX.Element[]}) {
     super(props)
