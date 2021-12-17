@@ -206,9 +206,10 @@ a:hover, a:focus {
 }
 
 .tippy-box[data-theme~='light'] span {
-  margin: 1.3em;
+  margin: .1em .5em;
   padding: 1em;
   border-radius: 7px;
+  display: inline-block;
 }
 
 .tippy-box[data-theme~='light'] span:hover, .bar>span>.icon:hover {
