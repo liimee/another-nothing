@@ -165,12 +165,12 @@ class App extends Component<{}, {windows: Appp[]}> {
     })
   }
 
-  msg = (e: MessageEvent, i: Number) => {
-    switch(e.data.do) {
+  msg = ({data}: MessageEvent, i: Number) => {
+    switch(data.do) {
       case 'title':
       var f = this.state.windows
       var d = f.findIndex(s => s.id == i);
-      f[d].title = e.data.val;
+      f[d].title = data.val;
       this.setState({
         windows: f
       });
@@ -181,7 +181,7 @@ class App extends Component<{}, {windows: Appp[]}> {
       case 'fsable':
       var f = this.state.windows
       var d = f.findIndex(s => s.id == i);
-      f[d].fsable = e.data.val;
+      f[d].fsable = data.val;
       this.setState({
         windows: f
       });
