@@ -1,9 +1,9 @@
 export interface Appp {
-  app: String,
-  id: Number,
-  fs: Boolean,
-  top: Boolean,
-  title: String
+  app: string,
+  id: number,
+  fs: boolean,
+  top: boolean,
+  title: string
 }
 
 export interface Win {
@@ -15,5 +15,5 @@ export interface Win {
 }
 
 export interface Apps {
-  name: String
+  name: string
 }

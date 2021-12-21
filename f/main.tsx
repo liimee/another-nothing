@@ -112,7 +112,7 @@ class App extends Component<{}, {windows: Appp[]}> {
     })
   }
 
-  click = (app: String, t: String) => {
+  click = (app: string, t: string) => {
     console.log(this)
     var d = this.state.windows;
     d.push({
