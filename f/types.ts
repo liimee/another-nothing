@@ -3,7 +3,8 @@ export interface Appp {
   id: number,
   fs: boolean,
   top: boolean,
-  title: string
+  title: string,
+  fsable: boolean
 }
 
 export interface Win {

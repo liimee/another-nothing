@@ -35,7 +35,7 @@ class Window extends Component<Win, {}> {
     bounds=".desktop"
     onStart={() => drag(app.id)}
     >
-    <div className={app.fs ? 'window full' : 'window'} data-at-the-top={app.top.toString()}><div className="windowhandle"><span className="windowbtn"><button onClick={() => this.props.close(app.id)}><FontAwesomeIcon icon={faTimes} /></button><button onClick={() => full(app.id)}><FontAwesomeIcon icon={app.fs ? faCompressAlt : faExpandAlt} /></button></span><span className="windowtitle">{app.title}</span></div><iframe onLoad={this.lo} src={"/apps/"+app.app+"/build/index.html"} /></div>
+    <div className={app.fs ? 'window full' : 'window'} data-at-the-top={app.top.toString()}><div className="windowhandle"><span className="windowbtn"><button onClick={() => this.props.close(app.id)}><FontAwesomeIcon icon={faTimes} /></button><button disabled={!app.fsable} onClick={() => full(app.id)}><FontAwesomeIcon icon={app.fs ? faCompressAlt : faExpandAlt} /></button></span><span className="windowtitle">{app.title}</span></div><iframe onLoad={this.lo} src={"/apps/"+app.app+"/build/index.html"} /></div>
     </Draggable>
   }
 }
@@ -95,7 +95,8 @@ class App extends Component<{}, {windows: Appp[]}> {
         app: 'welcome',
         fs: false,
         top: true,
-        title: 'Welcome'
+        title: 'Welcome',
+        fsable: true
       }
     ]}
   }
@@ -120,7 +121,8 @@ class App extends Component<{}, {windows: Appp[]}> {
       id: this.num,
       fs: false,
       top: true,
-      title: t
+      title: t,
+      fsable: true
     });
     this.setState({
       windows: d
@@ -174,7 +176,15 @@ class App extends Component<{}, {windows: Appp[]}> {
       });
       break;
       case 'close':
-      this.close(i)
+      this.close(i);
+      break;
+      case 'fsable':
+      var f = this.state.windows
+      var d = f.findIndex(s => s.id == i);
+      f[d].fsable = e.data.val;
+      this.setState({
+        windows: f
+      });
     }
   }
 

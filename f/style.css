@@ -191,6 +191,10 @@ a:hover, a:focus {
   border-bottom-right-radius: 4px;
 }
 
+.windowbtn>*:disabled {
+  background-color: grey;
+}
+
 .apps {
   background-color: #fff;
   z-index: 50;
