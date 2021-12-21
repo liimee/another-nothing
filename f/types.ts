@@ -4,7 +4,8 @@ export interface Appp {
   fs: boolean,
   top: boolean,
   title: string,
-  fsable: boolean
+  fsable: boolean,
+  min: boolean
 }
 
 export interface Win {

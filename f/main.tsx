@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faArrowUp, faSignOutAlt, faTimes, faExpandAlt, faCompressAlt, faWifi } from '@fortawesome/free-solid-svg-icons'
+import { faArrowUp, faSignOutAlt, faMinus, faTimes, faExpandAlt, faCompressAlt, faWifi } from '@fortawesome/free-solid-svg-icons'
 import Draggable from 'react-draggable';
 import { Win, Appp } from './types';
 import Tippy from '@tippyjs/react';
@@ -35,7 +35,7 @@ class Window extends Component<Win, {}> {
     bounds=".desktop"
     onStart={() => drag(app.id)}
     >
-    <div className={app.fs ? 'window full' : 'window'} data-at-the-top={app.top.toString()}><div className="windowhandle"><span className="windowbtn"><button onClick={() => this.props.close(app.id)}><FontAwesomeIcon icon={faTimes} /></button><button disabled={!app.fsable} onClick={() => full(app.id)}><FontAwesomeIcon icon={app.fs ? faCompressAlt : faExpandAlt} /></button></span><span className="windowtitle">{app.title}</span></div><iframe onLoad={this.lo} src={"/apps/"+app.app+"/build/index.html"} /></div>
+    <div style={{display: app.min ? 'none' : 'block'}} className={app.fs ? 'window full' : 'window'} data-at-the-top={app.top.toString()}><div className="windowhandle"><span className="windowbtn"><button onClick={() => this.props.close(app.id)}><FontAwesomeIcon icon={faTimes} /></button><button disabled={!app.fsable} onClick={() => full(app.id)}><FontAwesomeIcon icon={app.fs ? faCompressAlt : faExpandAlt} /></button><button onClick={() => this.props.min(app.id, true)}><FontAwesomeIcon icon={faMinus} /></button></span><span className="windowtitle">{app.title}</span></div><iframe onLoad={this.lo} src={"/apps/"+app.app+"/build/index.html"} /></div>
     </Draggable>
   }
 }
@@ -96,7 +96,8 @@ class App extends Component<{}, {windows: Appp[]}> {
         fs: false,
         top: true,
         title: 'Welcome',
-        fsable: true
+        fsable: true,
+        min: false
       }
     ]}
   }
@@ -122,7 +123,8 @@ class App extends Component<{}, {windows: Appp[]}> {
       fs: false,
       top: true,
       title: t,
-      fsable: true
+      fsable: true,
+      min: false
     });
     this.setState({
       windows: d
@@ -165,6 +167,16 @@ class App extends Component<{}, {windows: Appp[]}> {
     })
   }
 
+  min = (o: number, e: boolean) => {
+    this.noOneIsAtTheTop();
+    var f = this.state.windows
+    var d = f.findIndex(s => s.id == o);
+    f[d].min = e;
+    this.setState({
+      windows: f
+    })
+  }
+
   msg = ({data}: MessageEvent, i: Number) => {
     switch(data.do) {
       case 'title':
@@ -191,9 +203,9 @@ class App extends Component<{}, {windows: Appp[]}> {
   render() {
     return (
       <><div className="desktop">
-      {this.state.windows.map((e: Appp) => {return <Window app={e} key={e.id} full={this.toggleFull} drag={this.drag} close={this.close} msg={this.msg} />})}
+      {this.state.windows.map((e: Appp) => {return <Window app={e} min={this.min} key={e.id} full={this.toggleFull} drag={this.drag} close={this.close} msg={this.msg} />})}
       <Bar openthing={this.click} w={this.state.windows.map((e) => {
-        return <Tippy content={e.title} arrow={false} delay={[300, 100]}><img onClick={() => this.top(e.id)} className="icon" src={`/apps/${e.app}/icon.svg`} /></Tippy>
+        return <Tippy content={e.title} arrow={false} delay={[300, 100]}><img onClick={() => { this.top(e.id); this.min(e.id, false); }} className="icon" src={`/apps/${e.app}/icon.svg`} /></Tippy>
       })}/>
       </div></>
     )
