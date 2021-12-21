@@ -261,6 +261,7 @@ a:hover, a:focus {
   color: #000;
   padding: 1em;
   border-radius: 6px;
+  box-shadow: 0 5px 8px 0 hsla(0,0%,0%,.2);
 }
 /*
 .tippy-box[data-theme~='light'][data-placement^='top'] > .tippy-arrow::before {
