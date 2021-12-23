@@ -15,6 +15,6 @@ yarn start
 - doesn't support old browsers(?)
 - tested only using firefox, and sometimes chromium
 
-if you want a better experience, use [HmmOS](https://electogenius.github.io/HmmOS) instead
+if you want a better experience, use [HmmOS](https://electogenius.github.io/HmmOS) instead (you just need a modern browser!)
 
 ![Works on my machine](worksonmymachine.png)
