@@ -61,7 +61,7 @@ post '/upload' do
   tempfile = params["e"][:tempfile]
   filename = params["e"][:filename]
   FileUtils.cp(tempfile.path, "data/#{e["user"]}/#{filename}")
-  "e"
+  "#{/.+\/apps\/(.*)\/build\/.+/.match(request.referrer)[1]}"
 end
 
 $cns = []
