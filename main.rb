@@ -58,10 +58,11 @@ end
 
 post '/upload' do
   e = checklogin(request)
+  halt 403, 'you don\'t have permission' if !JSON.parse($users.first(:username => e["user"])[:apps])[/.+\/apps\/(.*)\/build\/.+/.match(request.referrer)[1]]["perms"].include?('upload')
   tempfile = params["e"][:tempfile]
   filename = params["e"][:filename]
   FileUtils.cp(tempfile.path, "data/#{e["user"]}/#{filename}")
-  "#{/.+\/apps\/(.*)\/build\/.+/.match(request.referrer)[1]}"
+  "ok, i guess"
 end
 
 $cns = []
@@ -109,7 +110,7 @@ end
 
 def addUser(d)
   buildApp("welcome")
-  $users.insert(:username => d[:name], :password => BCrypt::Password.create(d[:pass]), :apps => '{"welcome": {"name": "Welcome"}}', :admin => d[:admin] != nil)
+  $users.insert(:username => d[:name], :password => BCrypt::Password.create(d[:pass]), :apps => '{"welcome": {"name": "Welcome", "perms": []}}', :admin => d[:admin] != nil)
   Dir.mkdir("data/#{d[:name]}")
 end
 
@@ -117,7 +118,8 @@ def installApp(a, d, e)
   s = $users.first(:username => a)[:apps]
   s = JSON.parse s
   s[d] = {
-    name: e
+    name: e,
+    perms: ['upload'] #remove later
   }
 
   d = JSON.generate(s)
