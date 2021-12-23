@@ -13,7 +13,8 @@ export interface Win {
   full: Function,
   drag: Function,
   close: Function,
-  msg: Function
+  msg: Function,
+  min: Function
 }
 
 export interface Apps {
