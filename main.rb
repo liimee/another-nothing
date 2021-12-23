@@ -143,7 +143,7 @@ def jwt(a)
   JWT.encode(p, "#{$config.first(:key => "jwt")}", 'HS256')
 end
 
-set :port, 3000
+#set :port, 3000
 
 get '/install' do
   #use some json file instead for name and stuff?
