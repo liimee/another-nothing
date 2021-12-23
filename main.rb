@@ -81,8 +81,15 @@ get '/things' do
 end
 
 get '/files/*' do
-  u = checklogin(request)
-  send_file "./data/#{u["user"]}/#{params['splat'].first}"
+  u = checklogin(request)["user"]
+  if File.directory?("./data/#{u}/#{params['splat'].first}")
+    content_type :json
+    {
+      files: Dir.entries("./data/#{u}/#{params['splat'].first}").drop(2)
+    }.to_json
+  else
+    send_file "./data/#{u}/#{params['splat'].first}"
+  end
 end
 
 get '/addus' do
