@@ -56,7 +56,7 @@ get '/' do
   end
 end
 
-post '/eyey' do
+post '/upload' do
   e = checklogin(request)
   tempfile = params["e"][:tempfile]
   filename = params["e"][:filename]
