@@ -82,10 +82,17 @@ end
 
 get '/files/*' do
   u = checklogin(request)["user"]
+  x = []
+  Dir.entries("./data/#{u}/#{params['splat'].first}").drop(2).each do |e|
+    x.push({
+      name: e,
+      dir: File.directory?("./data/#{u}/#{params['splat'].first}/#{e}")
+    })
+  end
   if File.directory?("./data/#{u}/#{params['splat'].first}")
     content_type :json
     {
-      files: Dir.entries("./data/#{u}/#{params['splat'].first}").drop(2)
+      files: x
     }.to_json
   else
     send_file "./data/#{u}/#{params['splat'].first}"
