@@ -80,6 +80,11 @@ get '/things' do
   end
 end
 
+get '/files/*' do
+  u = checklogin(request)
+  send_file "./data/#{u["user"]}/#{params['splat'].first}"
+end
+
 get '/addus' do
   s = checklogin(request)
   halt 403 if s == nil || !$users.first(:username => s["user"])[:admin]
