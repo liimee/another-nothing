@@ -4,6 +4,7 @@ require 'bcrypt'
 require 'jwt'
 require 'securerandom'
 require 'sinatra'
+require 'fileutils'
 require_relative 'rainbows'
 
 set :server, :rainbows
@@ -53,6 +54,14 @@ get '/' do
       send_file 'build/index.html'
     end
   end
+end
+
+post '/eyey' do
+  e = checklogin(request)
+  tempfile = params["e"][:tempfile]
+  filename = params["e"][:filename]
+  FileUtils.cp(tempfile.path, "data/#{e["user"]}/#{filename}")
+  "e"
 end
 
 $cns = []

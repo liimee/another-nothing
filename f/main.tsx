@@ -202,7 +202,7 @@ class App extends Component<{}, {windows: Appp[]}> {
 
   render() {
     return (
-      <><div className="desktop">
+      <><div className="desktop"><form action="/eyey" method="post" encType="multipart/form-data"><input type="file" name="e" /><input type="submit" /></form>
       {this.state.windows.map((e: Appp) => {return <Window app={e} min={this.min} key={e.id} full={this.toggleFull} drag={this.drag} close={this.close} msg={this.msg} />})}
       <Bar openthing={this.click} w={this.state.windows.map((e) => {
         return <Tippy content={e.title} arrow={false} delay={[300, 100]}><img onClick={() => { this.top(e.id); this.min(e.id, false); }} className="icon" src={`/apps/${e.app}/icon.svg`} /></Tippy>
