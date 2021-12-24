@@ -5,6 +5,8 @@ require 'jwt'
 require 'securerandom'
 require 'sinatra'
 require 'fileutils'
+require 'erb'
+require 'uri'
 require_relative 'rainbows'
 
 set :server, :rainbows
@@ -19,6 +21,7 @@ db.create_table? :users do
   String :password
   String :apps
   Boolean :admin
+  String :wp, default: 'default'
 end
 
 db.create_table? :config do
@@ -43,6 +46,10 @@ def checklogin(request)
 end
 
 $config.insert(:key => "jwt", :value => SecureRandom.hex) if $config.first(:key => "jwt") === nil
+
+before do
+  headers "Referrer-Policy" => "same-origin"
+end
 
 get '/' do
   if $users.count < 1
@@ -125,6 +132,24 @@ end
 get '/logout' do
   response.set_cookie("login", :max_age => -1)
   redirect '/'
+end
+
+get '/settings' do
+  u = checklogin(request)
+  d = $users.first(:username => u["user"])
+  b = binding
+  b.local_variable_set(:d, d)
+  s = File.read('f/settings.rhtml')
+  "#{ERB.new(s).result(b)}"
+end
+
+post '/settings' do
+  #kinda dumb but ok
+  s = URI(request.referrer)
+  halt 500 if s.path != '/settings'
+
+  $users.where(:username => checklogin(request)["user"]).update(params)
+  redirect '/settings'
 end
 
 def addUser(d)
