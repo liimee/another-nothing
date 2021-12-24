@@ -134,7 +134,6 @@ a:hover, a:focus {
   position: fixed;
   width: 100vw;
   height: 100vh;
-  background: linear-gradient(to right, #e4ff61, rgba(0, 255, 35, .25)) /*TODO: custom bg?*/
 }
 
 .window {

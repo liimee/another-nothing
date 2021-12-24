@@ -20,3 +20,7 @@ export interface Win {
 export interface Apps {
   name: string
 }
+
+export interface Conf {
+  wp: string
+}

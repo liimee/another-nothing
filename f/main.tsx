@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faArrowUp, faSignOutAlt, faMinus, faTimes, faExpandAlt, faCompressAlt, faWifi } from '@fortawesome/free-solid-svg-icons'
 import Draggable from 'react-draggable';
-import { Win, Appp } from './types';
+import { Win, Appp, Conf } from './types';
 import Tippy from '@tippyjs/react';
 import 'tippy.js/dist/tippy.css';
 
@@ -86,7 +86,7 @@ class Bar extends Component<{openthing: Function, w: JSX.Element[]}, {apps: {}, 
   }
 }
 
-class App extends Component<{}, {windows: Appp[]}> {
+class App extends Component<{}, {windows: Appp[], conf: Conf}> {
   constructor(props: {}) {
     super(props)
     this.state = {windows: [
@@ -99,7 +99,15 @@ class App extends Component<{}, {windows: Appp[]}> {
         fsable: true,
         min: false
       }
-    ]}
+    ], conf: {wp: 'default'}}
+  }
+
+  componentDidMount() {
+    evs.addEventListener('conf', (e: MessageEvent) => {
+      this.setState({
+        conf: JSON.parse(e.data)
+      })
+    })
   }
 
   num = 1;
@@ -202,7 +210,7 @@ class App extends Component<{}, {windows: Appp[]}> {
 
   render() {
     return (
-      <><div className="desktop">
+      <><div className="desktop" style={{backgroundImage: this.state.conf.wp != 'default' ? `url(/files/${encodeURIComponent(this.state.conf.wp)})` : 'linear-gradient(to right, #e4ff61, rgba(0, 255, 35, .25))'}}>
       {this.state.windows.map((e: Appp) => {return <Window app={e} min={this.min} key={e.id} full={this.toggleFull} drag={this.drag} close={this.close} msg={this.msg} />})}
       <Bar openthing={this.click} w={this.state.windows.map((e) => {
         return <Tippy content={e.title} arrow={false} delay={[300, 100]}><img onClick={() => { this.top(e.id); this.min(e.id, false); }} className="icon" src={`/apps/${e.app}/icon.svg`} /></Tippy>

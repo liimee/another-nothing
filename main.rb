@@ -84,6 +84,7 @@ get '/things' do
     ])
 
     evs('apps', $users.first(:username => d["user"])[:apps], d["user"])
+    evs('conf', getconf(d["user"]).to_json, d["user"])
   end
 end
 
@@ -143,12 +144,21 @@ get '/settings' do
   "#{ERB.new(s).result(b)}"
 end
 
+def getconf(u)
+  s = $users.first(:username => u)
+  {
+    wp: s[:wp]
+  }
+end
+
 post '/settings' do
   #kinda dumb but ok
   s = URI(request.referrer)
   halt 500 if s.path != '/settings'
 
-  $users.where(:username => checklogin(request)["user"]).update(params)
+  u = checklogin(request)["user"]
+  $users.where(:username => u).update(params)
+  evs 'conf', getconf(u).to_json, u
   redirect '/settings'
 end
 
