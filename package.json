@@ -3,9 +3,7 @@
   "version": "0.0",
   "private": true,
   "license": "MIT",
-  "devDependencies": {
-    "parcel": "^2.0.1"
-  },
+  "devDependencies": {},
   "scripts": {
     "start": "parcel build f/index.html f/adduser.html f/login.html --dist-dir build && ruby main.rb -p 3000"
   },
@@ -16,6 +14,7 @@
     "@tippyjs/react": "^4.2.6",
     "@types/react": "^17.0.37",
     "@types/react-dom": "^17.0.11",
+    "parcel": "^2.0.1",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-draggable": "^4.4.4"
