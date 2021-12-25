@@ -1,3 +1,4 @@
+![Another Nothing](/icon.svg)
 # another nothing
 
 You'll need [Node](https://nodejs.org/), [Yarn](https://yarnpkg.com/), [Ruby](https://www.ruby-lang.org/), and [Bundler](https://bundler.io/)
