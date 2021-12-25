@@ -5,7 +5,7 @@
   "license": "MIT",
   "devDependencies": {},
   "scripts": {
-    "start": "parcel build f/index.html f/adduser.html f/login.html --dist-dir build && ruby main.rb -p 3000"
+    "start": "parcel build f/index.html f/adduser.html f/login.html --dist-dir build && ruby main.rb -p 3000 -o 0.0.0.0"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^1.2.36",
