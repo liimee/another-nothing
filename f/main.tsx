@@ -6,6 +6,7 @@ import Draggable from 'react-draggable';
 import { Win, Appp, Conf } from './types';
 import Tippy from '@tippyjs/react';
 import 'tippy.js/dist/tippy.css';
+import Icon from 'url:./icon.svg'
 
 var evs = new EventSource('/things');
 
@@ -86,7 +87,7 @@ class Bar extends Component<{openthing: Function, w: JSX.Element[]}, {apps: {}, 
   }
 }
 
-class App extends Component<{}, {windows: Appp[], conf: Conf}> {
+class App extends Component<{}, {windows: Appp[], conf: Conf, loaded: boolean}> {
   constructor(props: {}) {
     super(props)
     this.state = {windows: [
@@ -99,10 +100,12 @@ class App extends Component<{}, {windows: Appp[], conf: Conf}> {
         fsable: true,
         min: false
       }
-    ], conf: {wp: 'default'}}
+    ], conf: {wp: 'default'}, loaded: false}
   }
 
   componentDidMount() {
+    window.onload = () => setTimeout(() => this.setState({loaded: true}), 500)
+
     evs.addEventListener('conf', (e: MessageEvent) => {
       this.setState({
         conf: JSON.parse(e.data)
@@ -214,8 +217,8 @@ class App extends Component<{}, {windows: Appp[], conf: Conf}> {
       {this.state.windows.map((e: Appp) => {return <Window app={e} min={this.min} key={e.id} full={this.toggleFull} drag={this.drag} close={this.close} msg={this.msg} />})}
       <Bar openthing={this.click} w={this.state.windows.map((e) => {
         return <Tippy content={e.title} arrow={false} delay={[300, 100]}><img onClick={() => { this.top(e.id); this.min(e.id, false); }} className="icon" src={`/apps/${e.app}/icon.svg`} /></Tippy>
-      })}/>
-      </div></>
+      })}/></div>
+      {this.state.loaded ? <></> : <div className="fs tl fix" style={{display: this.state.loaded ? 'none' : 'flex', justifyContent: 'center', alignItems: 'center', backgroundColor: '#fff'}}><img src={Icon} /></div>}</>
     )
   }
 }
