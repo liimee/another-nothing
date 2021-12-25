@@ -48,7 +48,7 @@ end
 $config.insert(:key => "jwt", :value => SecureRandom.hex) if $config.first(:key => "jwt") === nil
 
 before do
-  headers "Referrer-Policy" => "same-origin"
+  headers "Referrer-Policy" => "origin-when-cross-origin"
 end
 
 get '/' do
