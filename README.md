@@ -15,6 +15,7 @@ yarn start
 - poor a11y
 - doesn't support old browsers(?)
 - tested only using firefox, and sometimes chromium
+- there's too much bugs and problems
 
 if you want a better experience, use [HmmOS](https://electogenius.github.io/HmmOS) instead (you just need a modern browser!)
 
