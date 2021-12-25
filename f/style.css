@@ -175,6 +175,7 @@ a:hover, a:focus {
 .windowbtn>*{
   color: #fff;
   border: none;
+  margin: 0;
   padding: .3em 1em;
 }
 
