@@ -157,7 +157,7 @@ end
 post '/settings' do
   #kinda dumb but ok
   s = URI(request.referrer)
-  halt 500 if s.path != '/settings'
+  halt 500, 'no.' unless s.path == '/settings' && !request.xhr?
 
   u = checklogin(request)["user"]
   $users.where(:username => u).update(params.reject{|k| k.start_with?('app_')})
