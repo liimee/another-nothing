@@ -94,11 +94,11 @@ get '/files/*' do
   u = checklogin(request)["user"]
   if File.directory?("./data/#{u}/#{params['splat'].first}")
     x = []
-    Dir.entries("./data/#{u}/#{params['splat'].first}").drop(2).each do |e|
+    Dir.entries("./data/#{u}/#{params['splat'].first}").each do |e|
       x.push({
         name: e,
         dir: File.directory?("./data/#{u}/#{params['splat'].first}/#{e}")
-      })
+      }) unless e == '.' || e == '..'
     end
     content_type :json
     {
