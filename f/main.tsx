@@ -79,7 +79,7 @@ class Bar extends Component<{openthing: Function, w: JSX.Element[]}, {apps: {}, 
   render() {
     return (
       <>
-      <div className="bar"><Tippy placement='top-start' content={this.state.c ? 'Server-sent events should be received properly' : 'Server-sent events may not be received'}><span style={{display: 'inline-block', backgroundColor: this.state.c ? 'var(--color4)' : 'var(--color2)', padding: '1em', color: '#fff', borderBottomLeftRadius: '6px', borderTopLeftRadius: '6px'}}><FontAwesomeIcon icon={faWifi} /></span></Tippy><span>{this.props.w}</span><Tippy content={
+      <div className="bar a-f"><Tippy placement='top-start' content={this.state.c ? 'Server-sent events should be received properly' : 'Server-sent events may not be received'}><span style={{display: 'inline-block', backgroundColor: this.state.c ? 'var(--color4)' : 'var(--color2)', padding: '1em', color: '#fff', borderBottomLeftRadius: '6px', borderTopLeftRadius: '6px'}}><FontAwesomeIcon icon={faWifi} /></span></Tippy><span>{this.props.w}</span><Tippy content={
         <><div><b>another nothing <Tippy placement='top-end' content='sign out'><a href='/logout' style={{float: 'right'}}><FontAwesomeIcon icon={faSignOutAlt} /></a></Tippy></b></div><h2 style={{marginTop: 0.5}}>apps</h2> {Object.keys(this.state.apps).map((v) => <span onClick={() => this.openApp(v, this.state.apps[v].name)}><img className="icon" src={`/apps/${v}/icon.svg`} alt={`${this.state.apps[v].name} icon`} /> {this.state.apps[v].name}</span>)}</>
       } arrow={false} theme="light" interactive={true}><span style={{display: 'inline-block', padding: '1em'}}><FontAwesomeIcon icon={faArrowUp} /></span></Tippy></div>
       </>
@@ -87,7 +87,7 @@ class Bar extends Component<{openthing: Function, w: JSX.Element[]}, {apps: {}, 
   }
 }
 
-class App extends Component<{}, {windows: Appp[], conf: Conf, loaded: boolean}> {
+class App extends Component<{}, {windows: Appp[], conf: Conf}> {
   constructor(props: {}) {
     super(props)
     this.state = {windows: [
@@ -100,12 +100,10 @@ class App extends Component<{}, {windows: Appp[], conf: Conf, loaded: boolean}> 
         fsable: true,
         min: false
       }
-    ], conf: {wp: 'default'}, loaded: false}
+    ], conf: {wp: 'default'}}
   }
 
   componentDidMount() {
-    window.onload = () => setTimeout(() => this.setState({loaded: true}), 500)
-
     evs.addEventListener('conf', (e: MessageEvent) => {
       this.setState({
         conf: JSON.parse(e.data)
@@ -213,12 +211,11 @@ class App extends Component<{}, {windows: Appp[], conf: Conf, loaded: boolean}> 
 
   render() {
     return (
-      <><div className="desktop" style={{backgroundImage: this.state.conf.wp != 'default' ? `url(/files/${encodeURIComponent(this.state.conf.wp)})` : 'linear-gradient(to right, #e4ff61, rgba(0, 255, 35, .25))'}}>
+      <><div className="desktop a-f" style={{backgroundImage: this.state.conf.wp != 'default' ? `url(/files/${encodeURIComponent(this.state.conf.wp)})` : 'linear-gradient(to right, #e4ff61, rgba(0, 255, 35, .25))'}}>
       {this.state.windows.map((e: Appp) => {return <Window app={e} min={this.min} key={e.id} full={this.toggleFull} drag={this.drag} close={this.close} msg={this.msg} />})}
       <Bar openthing={this.click} w={this.state.windows.map((e) => {
         return <Tippy content={e.title} arrow={false} delay={[300, 100]}><img onClick={() => { this.top(e.id); this.min(e.id, false); }} className="icon" src={`/apps/${e.app}/icon.svg`} /></Tippy>
-      })}/></div>
-      {this.state.loaded ? <></> : <div className="fs tl fix" style={{display: this.state.loaded ? 'none' : 'flex', justifyContent: 'center', alignItems: 'center', backgroundColor: '#fff'}}><img src={Icon} /></div>}</>
+      })}/></div></>
     )
   }
 }

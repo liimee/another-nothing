@@ -1,5 +1,15 @@
 @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;700&display=swap');
 
+@keyframes f {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
 :root {
   --color1: #e3b505;
   --color2: #95190c;
@@ -45,6 +55,10 @@ body {
 
 .with-br {
   border-radius: 6px;
+}
+
+.a-f {
+  animation: f .8s;
 }
 
 p, .no-margin {
