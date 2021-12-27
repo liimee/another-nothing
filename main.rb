@@ -41,7 +41,7 @@ def checklogin(request)
   else
     s
   end
-rescue StandardError => e
+rescue StandardError
   nil
 end
 
@@ -77,16 +77,16 @@ post '/upload' do
   'ok, i guess'
 end
 
-$cns = []
+CNS = [].freeze
 get '/things' do
   d = checklogin(request)
   halt 401 if d.nil?
   content_type 'text/event-stream'
   stream(:keep_open) do |out|
-    $cns.push([
-                d['user'],
-                out
-              ])
+    CNS.push([
+               d['user'],
+               out
+             ])
 
     evs('apps', USERS.first(username: d['user'])[:apps], d['user'])
     evs('conf', getconf(d['user']).to_json, d['user'])
@@ -188,7 +188,7 @@ post '/settings' do
 end
 
 def addUser(d)
-  buildApp('welcome')
+  build_app('welcome')
   USERS.insert(username: d[:name], password: BCrypt::Password.create(d[:pass]),
                apps: '{"welcome": {"name": "Welcome", "perms": []}}', admin: !d[:admin].nil?)
   Dir.mkdir("data/#{d[:name]}")
@@ -209,7 +209,7 @@ def installApp(a, d, e)
 end
 
 def evs(a, b, c = nil)
-  s = $cns
+  s = CNS
   s.select! { |n| n[0] == c } unless c.nil?
   s.each do |e|
     e[1] << "event: #{a}\n"
@@ -231,7 +231,7 @@ get '/install' do
   halt 401 if s.nil?
 
   installApp(s['user'], params[:id], params[:name])
-  buildApp(params[:id])
+  build_app(params[:id])
   redirect '/'
 end
 
@@ -240,7 +240,7 @@ get '/:a' do
   send_file "build/#{params[:a]}"
 end
 
-def buildApp(a)
+def build_app(a)
   cmd = "yarn run parcel build apps/#{a}/index.html --public-url \"/apps/#{a}/build\" --dist-dir apps/#{a}/build"
   system(cmd)
 end
@@ -260,6 +260,6 @@ end
 USERS.each do |x|
   s = JSON.parse x[:apps]
   s.each do |k, _v|
-    buildApp(k)
+    build_app(k)
   end
 end
