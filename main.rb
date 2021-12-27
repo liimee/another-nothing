@@ -143,7 +143,7 @@ get '/settings' do
   b = binding
   b.local_variable_set(:d, d)
   b.local_variable_set(:perm_list, ['upload'])
-  s = File.read('f/settings.rhtml')
+  s = File.read('settings.rhtml')
   "#{ERB.new(s).result(b)}"
 end
 
@@ -157,19 +157,21 @@ end
 post '/settings' do
   #kinda dumb but ok
   s = URI(request.referrer)
+  u = checklogin(request)["user"]
   halt 500, 'no.' unless s.path == '/settings' && !request.xhr?
 
-  u = checklogin(request)["user"]
-  $users.where(:username => u).update(params.reject{|k| k.start_with?('app_')})
-  g = JSON.parse($users.first(:username => u)[:apps])
-  params.select {|k| k.start_with? 'app_'}.each do |k, v|
-    v.reject! { |e|
-      e == 'app'
-    }
-    g[k.sub('app_', '')]["perms"] = v
-    $users.where(:username => u).update(apps: JSON.generate(g))
+  if BCrypt::Password.new($users.first(:username => u)[:password]) == params["pass"]
+    $users.where(:username => u).update(params.reject{|k| k.start_with?('app_')||k == 'pass'})
+    g = JSON.parse($users.first(:username => u)[:apps])
+    params.select {|k| k.start_with? 'app_'}.each do |k, v|
+      v.reject! { |e|
+        e == 'app'
+      }
+      g[k.sub('app_', '')]["perms"] = v
+      $users.where(:username => u).update(apps: JSON.generate(g))
+    end
+    evs 'conf', getconf(u).to_json, u
   end
-  evs 'conf', getconf(u).to_json, u
   redirect '/settings'
 end
 
