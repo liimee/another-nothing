@@ -71,7 +71,7 @@ post '/upload' do
   tempfile = params["e"][:tempfile]
   filename = params["e"][:filename]
   r = Regexp.new(".+\/data\/#{e["user"]}\/.+")
-  halt 500 unless File.absolute_path("data/#{e["user"]}/#{params["path"]||""}/#{filename}").match?(r)
+  halt 500, "cannot upload" unless File.absolute_path("data/#{e["user"]}/#{params["path"]||""}/#{filename}").match?(r)
   FileUtils.cp(tempfile.path, "data/#{e["user"]}/#{params["path"]||""}/#{filename}")
   "ok, i guess"
 end
