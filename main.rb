@@ -146,6 +146,7 @@ def settings_p(u)
 end
 
 get '/settings' do
+  halt 500 if request.env["HTTP_SEC_FETCH_DEST"] == 'iframe'
   u = checklogin(request)
   s = settings_p u["user"]
   "#{ERB.new(s[0]).result(s[1])}"
@@ -162,7 +163,7 @@ post '/settings' do
   #kinda dumb but ok
   s = URI(request.referrer)
   u = checklogin(request)["user"]
-  halt 500, 'no.' unless s.path == '/settings' && !request.xhr?
+  halt 500, 'no.' unless s.path == '/settings' && !request.xhr? && request.env["HTTP_SEC_FETCH_DEST"] != 'iframe'
 
   if BCrypt::Password.new($users.first(:username => u)[:password]) == params["pass"]
     $users.where(:username => u).update(params.reject{|k| k.start_with?('app_')||k == 'pass'})
