@@ -10,6 +10,10 @@ body {
   padding: 1em;
 }
 
+h2 {
+  margin: .2em 0;
+}
+
 [type="text"], [type="password"] {
   padding: .5em;
   border-radius: 4px;
@@ -51,8 +55,12 @@ form {
 <body>
   <form action="/settings" method="post">
     <h1>another nothing settings</h1>
+    <hr />
+    <h2>Basic stuff</h2>
     <label for="wp">Wallpaper (path)</label>
     <input name="wp" id="wp" type="text" value="<%= d[:wp] %>" required>
+    <hr />
+    <h2>Apps</h2>
     <% JSON.parse(d[:apps]).each do |k, v| %>
     <details><summary><%= v["name"] %> (<%= k %>)</summary>
       <input style="display: none" type="checkbox" name="app_<%= k %>[]" value="app" checked>
@@ -67,6 +75,7 @@ form {
     </details>
     <% end %>
     <hr />
+    <h2>Submit</h2>
     <label for="pass">Current password</label>
     <input type="password" id="pass" name="pass" required>
     <input type="submit" value="done">
