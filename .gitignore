@@ -3,3 +3,4 @@ build/
 node_modules
 data/
 process-palette.json
+apps/*_*
