@@ -137,14 +137,18 @@ get '/logout' do
   redirect '/'
 end
 
-get '/settings' do
-  u = checklogin(request)
-  d = $users.first(:username => u["user"])
+def settings_p(u)
+  d = $users.first(:username => u)
   b = binding
   b.local_variable_set(:d, d)
   b.local_variable_set(:perm_list, ['upload'])
-  s = File.read('settings.rhtml')
-  "#{ERB.new(s).result(b)}"
+  [File.read('settings.rhtml'), b]
+end
+
+get '/settings' do
+  u = checklogin(request)
+  s = settings_p u["user"]
+  "#{ERB.new(s[0]).result(s[1])}"
 end
 
 def getconf(u)
@@ -172,7 +176,9 @@ post '/settings' do
     end
     evs 'conf', getconf(u).to_json, u
   end
-  redirect '/settings'
+
+  s = settings_p u
+  "#{ERB.new(s[0]).result(s[1])}"
 end
 
 def addUser(d)
