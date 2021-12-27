@@ -17,7 +17,7 @@ Dir.mkdir 'apps' unless File.exist? 'apps'
 db = Sequel.connect 'sqlite://data/data.db'
 
 db.create_table? :users do
-  primary_key String :username
+  String :username
   String :password
   String :apps
   Boolean :admin
@@ -25,7 +25,7 @@ db.create_table? :users do
 end
 
 db.create_table? :config do
-  primary_key String :key
+  String :key
   String :value
 end
 
