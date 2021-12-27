@@ -232,13 +232,19 @@ end
 
 #set :port, 3000
 
-get '/install' do
+post '/install' do
   #use some json file instead for name and stuff?
+  halt 500, 'no.' unless URI(request.referrer).path == '/settings' && !request.xhr? && request.env["HTTP_SEC_FETCH_DEST"] != 'iframe'
   s = checklogin(request)
   halt 401 if s == nil
 
-  installApp(s["user"], params[:id], params[:name])
-  buildApp(params[:id])
+  halt 500, 'not a dir' if !File.directory?("data/#{s["user"]}/#{params[:path]}")
+  #TODO: check for ..
+  u = SecureRandom.hex()
+  FileUtils.cp_r("data/#{s["user"]}/#{params[:path]}", "apps/#{s["user"]}_#{u}")
+  #yarn?
+  installApp(s["user"], "#{s["user"]}_#{u}", params[:name])
+  buildApp("#{s["user"]}_#{u}")
   redirect '/'
 end
 
