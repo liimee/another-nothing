@@ -70,6 +70,8 @@ post '/upload' do
   halt 403, 'you don\'t have permission' if !JSON.parse($users.first(:username => e["user"])[:apps])[/.+\/apps\/(.*)\/build\/.+/.match(request.referrer)[1]]["perms"].include?('upload')
   tempfile = params["e"][:tempfile]
   filename = params["e"][:filename]
+  r = Regexp.new(".+\/data\/#{e["user"]}\/.+")
+  halt 500, "cannot upload" unless File.absolute_path("data/#{e["user"]}/#{params["path"]||""}/#{filename}").match?(r)
   FileUtils.cp(tempfile.path, "data/#{e["user"]}/#{params["path"]||""}/#{filename}")
   "ok, i guess"
 end
