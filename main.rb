@@ -144,6 +144,8 @@ def settings_p(u)
   b = binding
   b.local_variable_set(:d, d)
   b.local_variable_set(:perm_list, ['upload'])
+  b.local_variable_set(:admin, d[:admin])
+  b.local_variable_set(:users, $users)
   [File.read('settings.rhtml'), b]
 end
 
@@ -168,7 +170,7 @@ post '/settings' do
   halt 500, 'no.' unless s.path == '/settings' && !request.xhr? && request.env["HTTP_SEC_FETCH_DEST"] != 'iframe'
 
   if BCrypt::Password.new($users.first(:username => u)[:password]) == params["pass"]
-    $users.where(:username => u).update(params.reject{|k| k.start_with?('app_')||k == 'pass'})
+    $users.where(:username => u).update(params.reject{|k| k.start_with?('app_')||k == 'pass'||k == 'users'})
     g = JSON.parse($users.first(:username => u)[:apps])
     params.select {|k| k.start_with? 'app_'}.each do |k, v|
       v.reject! { |e|
@@ -177,6 +179,15 @@ post '/settings' do
       g[k.sub('app_', '')]["perms"] = v
       $users.where(:username => u).update(apps: JSON.generate(g))
     end
+
+    temp = $users
+    temp.each do |v|
+      unless params.select{|k|k=='users'}.has_value?(v[:username])||v[:username]==u
+        $users.where(username: v[:username]).delete
+        FileUtils.remove_dir("data/#{v[:username]}")
+      end
+    end
+
     evs 'conf', getconf(u).to_json, u
   end
 

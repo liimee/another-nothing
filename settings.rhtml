@@ -1,5 +1,5 @@
 <html>
-<head><title>settings</title>
+<head><title>another nothing settings</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;700&display=swap');
 
@@ -35,7 +35,7 @@ details {
   margin: .2em;
 }
 
-:not(details) > label {
+label:not(.no) {
   margin: .5em 0;
   display: block;
 }
@@ -74,11 +74,23 @@ form {
         <% else %>
           <input type="checkbox" name="app_<%= k %>[]" value="<%= e %>" id="<%= k %>_<%= e %>">
         <% end %>
-        <label for="<%= k %>_<%= e %>"><%= e %></label>
+        <label class="no" for="<%= k %>_<%= e %>"><%= e %></label>
       <% end %>
     </details>
     <% end %>
     <hr />
+    <% if admin %>
+      <h2>Users <i class="g">(uncheck to remove)</i></h2>
+      <% users.each do |e| %>
+        <% if e[:username] == d[:username] %>
+          <input type="checkbox" name="users[]" value="<%= e[:username] %>" id="user_<%= e[:username] %>" checked disabled>
+        <% else %>
+          <input type="checkbox" name="users[]" value="<%= e[:username] %>" id="user_<%= e[:username] %>" checked>
+        <% end %>
+        <label class="no" for="user_<%= e[:username] %>"><%= e[:username] %><% if e[:admin] %> <i class="g">(admin)</i><% end %></label>
+      <% end %>
+      <hr />
+    <% end %>
     <h2>Submit</h2>
     <label for="pass">Current password</label>
     <input type="password" id="pass" name="pass" required>
