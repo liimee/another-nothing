@@ -186,7 +186,7 @@ def installApp(a, d, e)
   s = JSON.parse s
   s[d] = {
     name: e,
-    perms: ['upload'] #remove later
+    perms: []
   }
 
   d = JSON.generate(s)
