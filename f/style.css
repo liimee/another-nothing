@@ -228,14 +228,14 @@ a:hover, a:focus {
   overflow-y: auto;
 }
 
-.tippy-box[data-theme~='light'] span {
+.tippy-box[data-theme~='light'] .api {
   margin: .1em .5em;
   padding: 1em;
   border-radius: 7px;
   display: inline-block;
 }
 
-.tippy-box[data-theme~='light'] span:hover, .bar>span>.icon:hover {
+.tippy-box[data-theme~='light'] .api:hover, .bar>span>.icon:hover {
   background-color: #d6d6d6;
 }
 
