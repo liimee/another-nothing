@@ -183,6 +183,9 @@ post '/settings' do
     temp = $users
     temp.each do |v|
       unless params.select{|k|k=='users'}.has_value?(v[:username])||v[:username]==u
+        JSON.parse(v[:apps]).each do |k,v|
+          FileUtils.remove_dir("apps/#{k}") unless k == 'welcome'
+        end
         $users.where(username: v[:username]).delete
         FileUtils.remove_dir("data/#{v[:username]}")
       end
@@ -197,7 +200,8 @@ end
 
 def addUser(d)
   buildApp("welcome")
-  $users.insert(:username => d[:name], :password => BCrypt::Password.create(d[:pass]), :apps => '{"welcome": {"name": "Welcome", "perms": []}}', :admin => d[:admin] != nil)
+  buildApp("test")
+  $users.insert(:username => d[:name], :password => BCrypt::Password.create(d[:pass]), :apps => '{"test": {"name": "Test", "perms": []}, "welcome": {"name": "Welcome", "perms": []}}', :admin => d[:admin] != nil)
   Dir.mkdir("data/#{d[:name]}")
 end
 
