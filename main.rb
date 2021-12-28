@@ -113,6 +113,20 @@ get '/files/*' do
   end
 end
 
+delete '/files/*' do
+  u = checklogin(request)["user"]
+  halt 403, 'you don\'t have permission' if !JSON.parse($users.first(:username => u)[:apps])[/.+\/apps\/(.*)\/build\/.+/.match(request.referrer)[1]]["perms"].include?('upload')
+  halt 500 unless File.absolute_path("data/#{u}/#{params['splat'].first}").match?(dirg(u))
+  #handle errors?
+  if File.directory?("data/#{u}/#{params['splat'].first}")
+    FileUtils.remove_dir("data/#{u}/#{params['splat'].first}")
+  else
+    File.delete("data/#{u}/#{params['splat'].first}")
+  end
+
+  "OK"
+end
+
 get '/addus' do
   s = checklogin(request)
   halt 403 if s == nil || !$users.first(:username => s["user"])[:admin]
@@ -192,7 +206,7 @@ post '/settings' do
 
     temp = $users
     temp.each do |v|
-      unless params.select{|k|k=='users'}['users'].include?(v[:username])||v[:username]==u
+      unless ((params.select{|k|k=='users'}['users'])||[]).include?(v[:username])||v[:username]==u
         JSON.parse(v[:apps]).each do |k,v|
           FileUtils.remove_dir("apps/#{k}") unless k == 'welcome'||k=='test'
         end

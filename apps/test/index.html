@@ -8,6 +8,8 @@
 <input type="text" value="test" oninput="s.postMessage({do: 'title', val: event.target.value})">
 <h1>Create dir</h1>
 <form action="/dir" method="post"><input type="text" name="p"><input type="submit"></form>
+<h1>Del</h1>
+<input type="text" id="s"><button onclick="fetch('/files/'+document.querySelector('#s').value, {method: 'delete'})">
 <script>
 var s;
 window.onmessage = e => s = e.ports[0];
