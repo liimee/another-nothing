@@ -182,9 +182,9 @@ post '/settings' do
 
     temp = $users
     temp.each do |v|
-      unless params.select{|k|k=='users'}.has_value?(v[:username])||v[:username]==u
+      unless params.select{|k|k=='users'}['users'].include?(v[:username])||v[:username]==u
         JSON.parse(v[:apps]).each do |k,v|
-          FileUtils.remove_dir("apps/#{k}") unless k == 'welcome'
+          FileUtils.remove_dir("apps/#{k}") unless k == 'welcome'||k=='test'
         end
         $users.where(username: v[:username]).delete
         FileUtils.remove_dir("data/#{v[:username]}")
@@ -240,7 +240,7 @@ post '/install' do
   #use some json file instead for name and stuff?
   halt 500, 'no.' unless URI(request.referrer).path == '/settings' && !request.xhr? && request.env["HTTP_SEC_FETCH_DEST"] != 'iframe'
   s = checklogin(request)
-  halt 401 if s == nil
+  halt 401, 'authentication failed' if s == nil || BCrypt::Password.new($users.first(:username => s["user"])[:password]) != params["pass"]
 
   halt 500, 'no.' unless File.absolute_path("data/#{s["user"]}/#{params[:path]}").match?(dirg(s["user"])) && File.directory?("data/#{s["user"]}/#{params[:path]}")
   u = SecureRandom.hex()
