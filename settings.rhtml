@@ -100,9 +100,9 @@ form {
   <form action="/install" method="post">
     <h1>install an app</h1>
     <label for="install_path">Path</label>
-    <input type="text" id="install_path" name="path">
+    <input type="text" id="install_path" name="path" required>
     <label for="install_name">Name</label>
-    <input type="text" id="install_name" name="name">
+    <input type="text" id="install_name" name="name" required>
     <input type="submit" value="install">
   </form>
   <p class="g">The web client <i>should</i> receive changes in real-time</p>
