@@ -31,6 +31,7 @@ end
 
 $users = db[:users]
 $config = db[:config]
+def dirg(a) Regexp.new("#{File.absolute_path('.')}\/data\/#{a}\/.+") end
 
 def checklogin(request)
   begin
@@ -70,8 +71,7 @@ post '/upload' do
   halt 403, 'you don\'t have permission' if !JSON.parse($users.first(:username => e["user"])[:apps])[/.+\/apps\/(.*)\/build\/.+/.match(request.referrer)[1]]["perms"].include?('upload')
   tempfile = params["e"][:tempfile]
   filename = params["e"][:filename]
-  r = Regexp.new("#{File.absolute_path('.')}\/data\/#{e["user"]}\/.+")
-  halt 500, "cannot upload" unless File.absolute_path("data/#{e["user"]}/#{params["path"]||""}/#{filename}").match?(r)
+  halt 500, "cannot upload" unless File.absolute_path("data/#{e["user"]}/#{params["path"]||""}/#{filename}").match?(dirg(e["user"]))
   FileUtils.cp(tempfile.path, "data/#{e["user"]}/#{params["path"]||""}/#{filename}")
   "ok, i guess"
 end
@@ -238,8 +238,7 @@ post '/install' do
   s = checklogin(request)
   halt 401 if s == nil
 
-  halt 500, 'not a dir' if !File.directory?("data/#{s["user"]}/#{params[:path]}")
-  #TODO: check for ..
+  halt 500, 'no.' unless File.absolute_path("data/#{s["user"]}/#{params[:path]}").match?(dirg(s["user"])) && File.directory?("data/#{s["user"]}/#{params[:path]}")
   u = SecureRandom.hex()
   FileUtils.cp_r("data/#{s["user"]}/#{params[:path]}", "apps/#{s["user"]}_#{u}")
   #yarn?
