@@ -6,6 +6,8 @@
 <button onclick="s.postMessage({do: 'close'})">Close</button>
 <h1>Window title test</h1>
 <input type="text" value="test" oninput="s.postMessage({do: 'title', val: event.target.value})">
+<h1>Create dir</h1>
+<form action="/dir" method="post"><input type="text" name="p"><input type="submit"></form>
 <script>
 var s;
 window.onmessage = e => s = e.ports[0];

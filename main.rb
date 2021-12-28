@@ -129,6 +129,14 @@ post '/addus' do
   # TODO: add checks?
 end
 
+post '/dir' do
+  e = checklogin(request)
+  halt 403, 'you don\'t have permission' if !JSON.parse($users.first(:username => e["user"])[:apps])[/.+\/apps\/(.*)\/build\/.+/.match(request.referrer)[1]]["perms"].include?('upload')
+  halt 500, 'no.' unless File.absolute_path("data/#{e["user"]}/#{params[:p]}").match?(dirg(e["user"]))
+  Dir.mkdir("data/#{e["user"]}/#{params[:p]}")
+  "ok"
+end
+
 post '/login' do
   redirect back unless $users.first(:username => params[:name]) != nil
   x = BCrypt::Password.new($users.first(:username => params[:name])[:password])
