@@ -26,7 +26,7 @@ class App extends Component {
           this.setState({path: x})
         }}>{v}/</a> </>
       })}</div>
-      <Files path={this.state.path} s={this.s} />
+      <div className="path"><Files path={this.state.path} s={this.s} /></div>
     </>
   }
 }
