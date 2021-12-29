@@ -97,7 +97,12 @@ class Files extends Component {
     fetch('/upload', {
       method: 'post',
       body: f
-    }).then(e => {if(!e.ok) {throw new Error()}}).then(v => {
+    }).then(f => {
+      e.target.value = null;
+      if(!f.ok) {
+        throw new Error()
+      }
+    }).then(_ => {
       alert('uploaded, i guess')
     }).catch(() => {
       alert('error when uploading file')
