@@ -127,6 +127,14 @@ delete '/files/*' do
   "OK"
 end
 
+post "/copy/*" do
+  u = checklogin(request)["user"]
+  halt 403, 'you don\'t have permission' if !JSON.parse($users.first(:username => u)[:apps])[/.+\/apps\/(.*)\/build\/.+/.match(request.referrer)[1]]["perms"].include?('upload')
+  halt 500 unless File.absolute_path("data/#{u}/#{params['splat'].first}").match?(dirg(u)) && File.absolute_path("data/#{u}/#{params[:to]}").match?(dirg(u))
+  FileUtils.cp_r("data/#{u}/#{params['splat'].first}", "data/#{u}/#{params[:to]}")
+  "OK"
+end
+
 get '/addus' do
   s = checklogin(request)
   halt 403 if s == nil || !$users.first(:username => s["user"])[:admin]
