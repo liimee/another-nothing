@@ -20,11 +20,11 @@ class App extends Component {
     console.log(this.state.path)
     return <>
       <div className="path">{this.state.path.map((v, i) => {
-        return <a onClick={() => {
+        return <><a onClick={() => {
           var x = this.state.path;
           x = x.slice(0, i+1)
           this.setState({path: x})
-        }}>{v}/</a>
+        }}>{v}/</a> </>
       })}</div>
       <Files path={this.state.path} s={this.s} />
     </>
