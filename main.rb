@@ -225,7 +225,8 @@ end
 def addUser(d)
   buildApp("welcome")
   buildApp("test")
-  $users.insert(:username => d[:name], :password => BCrypt::Password.create(d[:pass]), :apps => '{"test": {"name": "Test", "perms": []}, "welcome": {"name": "Welcome", "perms": []}}', :admin => d[:admin] != nil)
+  buildApp("files")
+  $users.insert(:username => d[:name], :password => BCrypt::Password.create(d[:pass]), :apps => '{"files": {"name": "Files", "perms": ["upload"]}, "test": {"name": "Test", "perms": []}, "welcome": {"name": "Welcome", "perms": []}}', :admin => d[:admin] != nil)
   Dir.mkdir("data/#{d[:name]}")
 end
 

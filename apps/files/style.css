@@ -1,0 +1,27 @@
+.path {
+  border: solid 2px grey;
+  border-radius: 4px;
+  padding: .5em;
+  display:block;
+}
+
+a {
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+li {
+  list-style:none;
+}
+
+ul {
+  padding: 0;
+}
+
+li.dir::before {
+  content: "📁 ";
+}
+
+li.file::before {
+  content: "📄 ";
+}

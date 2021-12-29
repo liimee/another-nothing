@@ -166,7 +166,7 @@ a:hover, a:focus {
 
 .window.full {
   border-radius: 0;
-  width: 100%;
+  width: calc(100% - .5em);
   height: 100%;
   transform: none !important;
 }
