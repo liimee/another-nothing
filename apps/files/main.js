@@ -27,26 +27,32 @@ class App extends Component {
 class Files extends Component {
   constructor(props){
     super(props)
+    this.f()
     this.state = {
       files: []
     }
   }
 
-  componentDidMount(){this.f()}
-  componentDidUpdate(){this.f()}
-
   f = () => {
-    fetch('/files/'+this.props.path).then(e => {return e.json()}).then(v => {
+    fetch('/files/'+this.props.path).then(e => {if(e.ok) {return e.json()} throw new Error()}).then(v => {
       this.setState({
         files: v.files
       })
+    }).catch(() => {
+      alert('Can\'t fetch files')
     })
+  }
+
+  componentDidUpdate(a){
+    if(a.path != this.props.path) {
+      this.f()
+    }
   }
 
   render() {
     return <ul>
     {this.state.files.map(v =>
-      <li className={v.dir ? "dir" : "file"}>{v.dir ? <a onClick={() => this.props.s(this.props.path+'/'+v.name)}>{v.name}</a> : <>{v.name}</>}</li>
+      <li className={v.dir ? "dir" : "file"}>{v.dir ? <a onClick={() => {this.props.s(this.props.path+'/'+v.name); }}>{v.name}</a> : <>{v.name}</>}</li>
     )}
     </ul>
   }
