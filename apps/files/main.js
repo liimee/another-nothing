@@ -26,7 +26,7 @@ class App extends Component {
           this.setState({path: x})
         }}>{v}/</a> </>
       })}</div>
-      <div className="path"><Files path={this.state.path} s={this.s} /></div>
+      <Files path={this.state.path} s={this.s} />
     </>
   }
 }
@@ -89,12 +89,11 @@ class Files extends Component {
   }
 
   render() {
-    return <ul>
+    return <><div className="path"><ul>
     {this.state.files.map(v =>
       <li className={v.dir ? "dir" : "file"}>{v.dir ? <a onClick={() => {this.props.s(this.props.path.concat([v.name]));}}>{v.name}</a> : <>{v.name}</>} [<a onClick={() => this.del(this.props.path.concat([v.name]))}>🗑️</a>]</li>
     )}
-    <li className="upload">Upload file(s) <input type="file" multiple onChange={this.upload} /></li>
-    </ul>
+    </ul></div><div className="path">⬆️ Upload file(s) <input type="file" multiple onChange={this.upload} /></div></>
   }
 }
 
