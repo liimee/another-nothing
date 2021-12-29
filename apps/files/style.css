@@ -25,3 +25,7 @@ li.dir::before {
 li.file::before {
   content: "📄 ";
 }
+
+li.upload::before {
+  content: "⬆️ "
+}

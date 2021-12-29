@@ -56,11 +56,30 @@ class Files extends Component {
     }
   }
 
+  upload = (e) => {
+    var f = new FormData();
+    Object.values(e.target.files).forEach(v => {
+      console.log(v)
+      f.append('e[]', v)
+    })
+    f.append('path', this.props.path.join('/'))
+
+    fetch('/upload', {
+      method: 'post',
+      body: f
+    }).then(e => {if(!e.ok) {throw new Error()}}).then(v => {
+      alert('uploaded, i guess')
+    }).catch(() => {
+      alert('error when uploading file')
+    })
+  }
+
   render() {
     return <ul>
     {this.state.files.map(v =>
       <li className={v.dir ? "dir" : "file"}>{v.dir ? <a onClick={() => {this.props.s(this.props.path.concat([v.name]));}}>{v.name}</a> : <>{v.name}</>}</li>
     )}
+    <li className="upload">Upload file(s) <input type="file" multiple onChange={this.upload} /></li>
     </ul>
   }
 }
