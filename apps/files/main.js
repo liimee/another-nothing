@@ -56,6 +56,24 @@ class Files extends Component {
     }
   }
 
+  dir = () => {
+    var e = prompt('Directory name');
+    if(e) {
+      var f = new FormData();
+      f.set('p', this.props.path.join('/')+'/'+e);
+      fetch(`/dir`, {
+        method: 'post',
+        body: f
+      }).then(e => {if(!e.ok) {throw new Error()}}).then(() => {
+        alert('created, i guess')
+      }).catch(() => {
+        alert('failed to create directory')
+      })
+    }
+
+    this.f()
+  }
+
   del = (e => {
     fetch(`/files/${e.join('/')}`, {
       method: 'delete'
@@ -93,7 +111,7 @@ class Files extends Component {
     {this.state.files.map(v =>
       <li className={v.dir ? "dir" : "file"}>{v.dir ? <a onClick={() => {this.props.s(this.props.path.concat([v.name]));}}>{v.name}</a> : <>{v.name}</>} [<a onClick={() => this.del(this.props.path.concat([v.name]))}>🗑️</a>]</li>
     )}
-    </ul></div><div className="path">⬆️ Upload file(s) <input type="file" multiple onChange={this.upload} /></div></>
+    </ul></div><div className="path">[ ⬆️ Upload file(s) <input type="file" multiple onChange={this.upload} /> ] [<a onClick={this.dir}>📁 Create directory</a>]</div></>
   }
 }
 
