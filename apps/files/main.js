@@ -98,7 +98,6 @@ class Files extends Component {
       method: 'post',
       body: f
     }).then(f => {
-      e.target.value = null;
       if(!f.ok) {
         throw new Error()
       }
@@ -106,6 +105,8 @@ class Files extends Component {
       alert('uploaded, i guess')
     }).catch(() => {
       alert('error when uploading file')
+    }).then(() => {
+      e.target.value = null;
     })
 
     this.f()
@@ -129,12 +130,36 @@ class Files extends Component {
         alert('error when copying file/dir')
       })
     }
+
+    this.f();
+  }
+
+  mv = e => {
+    var i = prompt('Move to...', this.props.path.join('/')+'/'+e);
+    if(i) {
+      var f = new FormData();
+      f.set('to', i);
+      fetch('/move/'+this.props.path.join('/')+'/'+e, {
+        method: 'post',
+        body: f
+      }).then(f => {
+        if(!f.ok) {
+          throw new Error()
+        }
+      }).then(_ => {
+        alert('moved, i guess')
+      }).catch(() => {
+        alert('error when moving file/dir')
+      })
+    }
+
+    this.f()
   }
 
   render() {
     return <><div className="path"><ul>
     {this.state.files.map(v =>
-      <li className={v.dir ? "dir" : "file"}>{v.dir ? <a onClick={() => {this.props.s(this.props.path.concat([v.name]));}}>{v.name}</a> : <>{v.name}</>} [<a onClick={() => this.del(this.props.path.concat([v.name]))}>🗑️ delete</a>] [<a onClick={() => this.cp(v.name)}>📋 copy</a>]</li>
+      <li className={v.dir ? "dir" : "file"}>{v.dir ? <a onClick={() => {this.props.s(this.props.path.concat([v.name]));}}>{v.name}</a> : <>{v.name}</>} <a onClick={() => this.del(this.props.path.concat([v.name]))}>[🗑️ delete]</a> <a onClick={() => this.cp(v.name)}>[📋 copy]</a>  <a onClick={() => this.mv(v.name)}>[➡️ move]</a></li>
     )}
     </ul></div><div className="path">[ ⬆️ Upload file(s) <input type="file" multiple onChange={this.upload} /> ] [<a onClick={this.dir}>📁 Create directory</a>]</div></>
   }
