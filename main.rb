@@ -309,7 +309,7 @@ get '/:a' do
 end
 
 def buildApp(a)
-  cmd = "yarn run parcel build apps/#{a}/index.html --public-url \"/apps/#{a}/build\" --dist-dir apps/#{a}/build"
+  cmd = "yarn run parcel build apps/#{a}/*.html --public-url \"/apps/#{a}/build\" --dist-dir apps/#{a}/build"
   system(cmd)
 end
 

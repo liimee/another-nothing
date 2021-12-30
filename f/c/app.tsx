@@ -41,7 +41,7 @@ export default class App extends Component<{}, {windows: Appp[], conf: Conf}> {
     })
   }
 
-  click = (app: string, t: string) => {
+  click = (app: string, t: string, f = 'index.html') => {
     console.log(this)
     var d = this.state.windows;
     d.push({
@@ -51,7 +51,8 @@ export default class App extends Component<{}, {windows: Appp[], conf: Conf}> {
       top: true,
       title: t,
       fsable: true,
-      min: false
+      min: false,
+      file: f
     });
     this.setState({
       windows: d
@@ -124,6 +125,10 @@ export default class App extends Component<{}, {windows: Appp[], conf: Conf}> {
       this.setState({
         windows: f
       });
+      break;
+      case 'open':
+      var f = this.state.windows;
+      this.click(f[f.findIndex(s => s.id == i)].app, data.val.title||'', data.val.file)
     }
   }
 

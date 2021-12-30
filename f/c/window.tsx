@@ -30,7 +30,7 @@ export default class Window extends Component<Win, {}> {
     bounds=".desktop"
     onStart={() => drag(app.id)}
     >
-    <div style={{display: app.min ? 'none' : 'block'}} className={app.fs ? 'window full' : 'window'} data-at-the-top={app.top.toString()}><div className="windowhandle"><span className="windowbtn"><button onClick={() => this.props.close(app.id)}><FontAwesomeIcon icon={faTimes} /></button><button disabled={!app.fsable} onClick={() => full(app.id)}><FontAwesomeIcon icon={app.fs ? faCompressAlt : faExpandAlt} /></button><button onClick={() => this.props.min(app.id, true)}><FontAwesomeIcon icon={faMinus} /></button></span><span className="windowtitle">{app.title.length < 1 ? <i style={{color: 'grey'}}>(no title)</i> : app.title}</span></div><iframe onLoad={this.lo} src={"/apps/"+app.app+"/build/index.html"} /></div>
+    <div style={{display: app.min ? 'none' : 'block'}} className={app.fs ? 'window full' : 'window'} data-at-the-top={app.top.toString()}><div className="windowhandle"><span className="windowbtn"><button onClick={() => this.props.close(app.id)}><FontAwesomeIcon icon={faTimes} /></button><button disabled={!app.fsable} onClick={() => full(app.id)}><FontAwesomeIcon icon={app.fs ? faCompressAlt : faExpandAlt} /></button><button onClick={() => this.props.min(app.id, true)}><FontAwesomeIcon icon={faMinus} /></button></span><span className="windowtitle">{app.title.length < 1 ? <i style={{color: 'grey'}}>(no title)</i> : app.title}</span></div><iframe onLoad={this.lo} src={"/apps/"+app.app+"/build/"+app.file} /></div>
     </Draggable>
   }
 }

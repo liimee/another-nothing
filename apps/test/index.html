@@ -10,6 +10,13 @@
 <form action="/dir" method="post"><input type="text" name="p"><input type="submit"></form>
 <h1>Del</h1>
 <input type="text" id="s"><button onclick="fetch('/files/'+document.querySelector('#s').value, {method: 'delete'})">
+<button onclick="s.postMessage({
+  do: 'open',
+  val: {
+    title: 'test',
+    file: 'test.html'
+  }
+})">new window</button>
 <script>
 var s;
 window.onmessage = e => s = e.ports[0];

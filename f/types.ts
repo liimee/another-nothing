@@ -5,7 +5,8 @@ export interface Appp {
   top: boolean,
   title: string,
   fsable: boolean,
-  min: boolean
+  min: boolean,
+  file?: string
 }
 
 export interface Win {
