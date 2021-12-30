@@ -158,9 +158,9 @@ class Files extends Component {
 
   render() {
     return <><div className="path"><ul>
-    {this.state.files.map(v =>
-      <li className={v.dir ? "dir" : "file"}>{v.dir ? <a onClick={() => {this.props.s(this.props.path.concat([v.name]));}}>{v.name}</a> : <>{v.name}</>} <a onClick={() => this.del(this.props.path.concat([v.name]))}>[🗑️ delete]</a> <a onClick={() => this.cp(v.name)}>[📋 copy]</a>  <a onClick={() => this.mv(v.name)}>[➡️ move]</a></li>
-    )}
+    {this.state.files.length < 1 ? <li>Nothing here</li> :
+      this.state.files.map(v => <li className={v.dir ? "dir" : "file"}>{v.dir ? <a onClick={() => {this.props.s(this.props.path.concat([v.name]));}}>{v.name}</a> : <>{v.name}</>} <a onClick={() => this.del(this.props.path.concat([v.name]))}>[🗑️ delete]</a> <a onClick={() => this.cp(v.name)}>[📋 copy]</a>  <a onClick={() => this.mv(v.name)}>[➡️ move]</a></li>)
+    }
     </ul></div><div className="path">[ ⬆️ Upload file(s) <input type="file" multiple onChange={this.upload} /> ] [<a onClick={this.dir}>📁 Create directory</a>]</div></>
   }
 }
