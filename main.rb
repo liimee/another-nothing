@@ -286,7 +286,9 @@ post '/install' do
   halt 500, 'no.' unless File.absolute_path("data/#{s["user"]}/#{params[:path]}").match?(dirg(s["user"])) && File.directory?("data/#{s["user"]}/#{params[:path]}")
   u = SecureRandom.hex()
   FileUtils.cp_r("data/#{s["user"]}/#{params[:path]}", "apps/#{s["user"]}_#{u}")
-  #yarn?
+  if File.file?("apps/#{s["user"]}_#{u}/package.json")
+    system("cd apps/#{s["user"]}_#{u} && yarn")
+  end
   installApp(s["user"], "#{s["user"]}_#{u}", params[:name])
   buildApp("#{s["user"]}_#{u}")
   redirect '/'
