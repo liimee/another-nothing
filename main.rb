@@ -224,7 +224,7 @@ post '/settings' do
     temp.each do |v|
       unless ((params.select{|k|k=='users'}['users'])||[]).include?(v[:username])||v[:username]==u
         JSON.parse(v[:apps]).each do |k,v|
-          FileUtils.remove_dir("apps/#{k}") unless k == 'welcome'||k=='test'
+          FileUtils.remove_dir("apps/#{k}") unless k == 'welcome'||k=='test'||k=='files'
         end
         $users.where(username: v[:username]).delete
         FileUtils.remove_dir("data/#{v[:username]}")
