@@ -1,59 +1,61 @@
 <html>
 <head><title>another nothing settings</title>
-<style>
-@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;700&display=swap');
+  <style>
+  @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;700&display=swap');
 
-body {
-  margin: auto;
-  width: max-content;
-  font-family: 'IBM Plex Sans', sans-serif;
-  padding: 1em;
-}
+  body {
+    margin: auto;
+    width: max-content;
+    font-family: 'IBM Plex Sans', sans-serif;
+    padding: 1em;
+  }
 
-h2, p {
-  margin: .2em 0;
-}
+  h2, p {
+    margin: .2em 0;
+  }
 
-.g {
-  color: grey;
-}
+  .g {
+    color: grey;
+  }
 
-[type="text"], [type="password"] {
-  padding: .5em;
-  border-radius: 4px;
-  border: solid 2px #d8d8d8;
-  outline: none;
-  width: 100%;
-}
+  [type="text"], [type="password"] {
+    padding: .5em;
+    border-radius: 4px;
+    border: solid 2px #d8d8d8;
+    outline: none;
+    width: 100%;
+  }
 
-[type="text"]:focus, [type="password"]:focus {
-  border-color: #000;
-}
+  [type="text"]:focus, [type="password"]:focus {
+    border-color: #000;
+  }
 
-details {
-  padding: .5em;
-  margin: .2em;
-}
+  details {
+    padding: .5em;
+    margin: .2em;
+    background-color: lightgrey;
+    border-radius: 4px;
+  }
 
-label:not(.no) {
-  margin: .5em 0;
-  display: block;
-}
+  label:not(.no) {
+    margin: .5em 0;
+    display: block;
+  }
 
-form {
-  width: 400px;
-  max-width: 100%;
-  margin: 0;
-}
+  form {
+    width: 400px;
+    max-width: 100%;
+    margin: 0;
+  }
 
-[type="submit"] {
-  padding: .8em 1em;
-  border-radius: 4px;
-  border: none;
-  display: block;
-  cursor: pointer;
-  margin: 1em 0;
-}
+  [type="submit"] {
+    padding: .8em 1em;
+    border-radius: 4px;
+    border: none;
+    display: block;
+    cursor: pointer;
+    margin: 1em 0;
+  }
 </style>
 </head>
 <body>
@@ -68,32 +70,34 @@ form {
     <% JSON.parse(d[:apps]).each do |k, v| %>
     <details><summary><%= v["name"] %> (<%= k %>)</summary>
       <input style="display: none" type="checkbox" name="app_<%= k %>[]" value="app" checked>
+      <% unless k=='files'||k=='test'||k=='welcome' %>
       <p><b>Uninstalling</b></p>
       <p><input name="uninstall_<%= k %>" type="checkbox" id="uninstall_<%= k %>"><label class="no" for="uninstall_<%= k %>">Uninstall?</label></p>
       <hr />
+      <% end %>
       <p><b>Permissions</b></p>
       <% perm_list.each do |e| %>
-        <% if v["perms"].include?(e) %>
-          <input type="checkbox" name="app_<%= k %>[]" value="<%= e %>" id="<%= k %>_<%= e %>" checked>
-        <% else %>
-          <input type="checkbox" name="app_<%= k %>[]" value="<%= e %>" id="<%= k %>_<%= e %>">
-        <% end %>
-        <label class="no" for="<%= k %>_<%= e %>"><%= e %></label>
+      <% if v["perms"].include?(e) %>
+      <input type="checkbox" name="app_<%= k %>[]" value="<%= e %>" id="<%= k %>_<%= e %>" checked>
+      <% else %>
+      <input type="checkbox" name="app_<%= k %>[]" value="<%= e %>" id="<%= k %>_<%= e %>">
+      <% end %>
+      <label class="no" for="<%= k %>_<%= e %>"><%= e %></label>
       <% end %>
     </details>
     <% end %>
     <hr />
     <% if admin %>
-      <h2>Users <i class="g">(uncheck to remove)</i></h2>
-      <% users.each do |e| %>
-        <% if e[:username] == d[:username] %>
-          <input type="checkbox" name="users[]" value="<%= e[:username] %>" id="user_<%= e[:username] %>" checked disabled>
-        <% else %>
-          <input type="checkbox" name="users[]" value="<%= e[:username] %>" id="user_<%= e[:username] %>" checked>
-        <% end %>
-        <label class="no" for="user_<%= e[:username] %>"><%= e[:username] %><% if e[:admin] %> <i class="g">(admin)</i><% end %></label>
-      <% end %>
-      <hr />
+    <h2>Users <i class="g">(uncheck to remove)</i></h2>
+    <% users.each do |e| %>
+    <% if e[:username] == d[:username] %>
+    <input type="checkbox" name="users[]" value="<%= e[:username] %>" id="user_<%= e[:username] %>" checked disabled>
+    <% else %>
+    <input type="checkbox" name="users[]" value="<%= e[:username] %>" id="user_<%= e[:username] %>" checked>
+    <% end %>
+    <label class="no" for="user_<%= e[:username] %>"><%= e[:username] %><% if e[:admin] %> <i class="g">(admin)</i><% end %></label>
+    <% end %>
+    <hr />
     <% end %>
     <h2>Submit</h2>
     <label for="settings_pass">Current password</label>
