@@ -68,6 +68,10 @@ form {
     <% JSON.parse(d[:apps]).each do |k, v| %>
     <details><summary><%= v["name"] %> (<%= k %>)</summary>
       <input style="display: none" type="checkbox" name="app_<%= k %>[]" value="app" checked>
+      <p><b>Uninstalling</b></p>
+      <p><input name="uninstall_<%= k %>" type="checkbox" id="uninstall_<%= k %>"><label class="no" for="uninstall_<%= k %>">Uninstall?</label></p>
+      <hr />
+      <p><b>Permissions</b></p>
       <% perm_list.each do |e| %>
         <% if v["perms"].include?(e) %>
           <input type="checkbox" name="app_<%= k %>[]" value="<%= e %>" id="<%= k %>_<%= e %>" checked>

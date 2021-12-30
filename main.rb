@@ -210,8 +210,9 @@ post '/settings' do
   halt 500, 'no.' unless s.path == '/settings' && !request.xhr? && request.env["HTTP_SEC_FETCH_DEST"] != 'iframe'
 
   if BCrypt::Password.new($users.first(:username => u)[:password]) == params["pass"]
-    $users.where(:username => u).update(params.reject{|k| k.start_with?('app_')||k == 'pass'||k == 'users'})
+    $users.where(:username => u).update(params.reject{|k| k.start_with?('app_')||k == 'pass'||k == 'users'||k.start_with?('uninstall_')})
     g = JSON.parse($users.first(:username => u)[:apps])
+
     params.select {|k| k.start_with? 'app_'}.each do |k, v|
       v.reject! { |e|
         e == 'app'
@@ -231,7 +232,15 @@ post '/settings' do
       end
     end
 
+    tpa = JSON.parse($users.first(username: u)[:apps])
+    params.select{|k| k.start_with?('uninstall_')}.each do |k,_|
+      tpa.delete(k.sub('uninstall_', ''))
+      FileUtils.remove_dir('apps/'+k.sub('uninstall_', ''))
+    end
+    $users.where(:username => u).update(apps: JSON.generate(tpa))
+
     evs 'conf', getconf(u).to_json, u
+    evs 'apps', tpa.to_json, u
   end
 
   s = settings_p u
@@ -291,7 +300,7 @@ post '/install' do
   end
   installApp(s["user"], "#{s["user"]}_#{u}", params[:name])
   buildApp("#{s["user"]}_#{u}")
-  redirect '/'
+  redirect '/settings'
 end
 
 get '/:a' do
