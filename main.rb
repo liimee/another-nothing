@@ -50,7 +50,7 @@ $config.insert(:key => "jwt", :value => SecureRandom.hex) if $config.first(:key 
 
 before do
   headers \
-    "Referrer-Policy" => "origin-when-cross-origin",
+    "Referrer-Policy" => "same-origin",
     "Cache-Control" => "no-store"
 end
 
