@@ -8,6 +8,7 @@ require 'fileutils'
 require 'erb'
 require 'uri'
 require_relative 'rainbows'
+require 'socket'
 
 set :server, :rainbows
 
@@ -31,6 +32,8 @@ end
 
 $users = db[:users]
 $config = db[:config]
+EEE = ENV["E"]=="y"
+HHH = EEE ? Socket.gethostname : 'localhost:3000'
 def dirg(a) Regexp.new("#{File.absolute_path('.')}\/data\/#{a}\/.+") end
 
 def checklogin(request)
@@ -49,6 +52,7 @@ end
 $config.insert(:key => "jwt", :value => SecureRandom.hex) if $config.first(:key => "jwt") === nil
 
 before do
+  redirect "#{request.scheme}://#{HHH}" if EEE && request.host != HHH
   headers \
     "Referrer-Policy" => "origin-when-cross-origin",
     "Cache-Control" => "no-store"
@@ -68,7 +72,7 @@ end
 
 post '/upload' do
   e = checklogin(request)
-  halt 403, 'you don\'t have permission' if !JSON.parse($users.first(:username => e["user"])[:apps])[/.+\/apps\/(.*)\/build\/.+/.match(request.referrer)[1]]["perms"].include?('upload')
+  halt 403, 'you don\'t have permission' if !JSON.parse($users.first(:username => e["user"])[:apps])[/#{HHH}\/apps\/(.*)\/build\/.+/.match(request.referrer)[1]]["perms"].include?('upload')
   params["e"].each do |f|
     tempfile = f[:tempfile]
     filename = f[:filename]
@@ -115,7 +119,7 @@ end
 
 delete '/files/*' do
   u = checklogin(request)["user"]
-  halt 403, 'you don\'t have permission' if !JSON.parse($users.first(:username => u)[:apps])[/.+\/apps\/(.*)\/build\/.+/.match(request.referrer)[1]]["perms"].include?('upload')
+  halt 403, 'you don\'t have permission' if !JSON.parse($users.first(:username => u)[:apps])[/#{HHH}\/apps\/(.*)\/build\/.+/.match(request.referrer)[1]]["perms"].include?('upload')
   halt 500 unless File.absolute_path("data/#{u}/#{params['splat'].first}").match?(dirg(u))
   #handle errors?
   if File.directory?("data/#{u}/#{params['splat'].first}")
@@ -129,7 +133,7 @@ end
 
 post "/copy/*" do
   u = checklogin(request)["user"]
-  halt 403, 'you don\'t have permission' if !JSON.parse($users.first(:username => u)[:apps])[/.+\/apps\/(.*)\/build\/.+/.match(request.referrer)[1]]["perms"].include?('upload')
+  halt 403, 'you don\'t have permission' if !JSON.parse($users.first(:username => u)[:apps])[/#{HHH}\/apps\/(.*)\/build\/.+/.match(request.referrer)[1]]["perms"].include?('upload')
   halt 500 unless File.absolute_path("data/#{u}/#{params['splat'].first}").match?(dirg(u)) && File.absolute_path("data/#{u}/#{params[:to]}").match?(dirg(u))
   FileUtils.cp_r("data/#{u}/#{params['splat'].first}", "data/#{u}/#{params[:to]}")
   "OK"
@@ -137,7 +141,7 @@ end
 
 post "/move/*" do
   u = checklogin(request)["user"]
-  halt 403, 'you don\'t have permission' if !JSON.parse($users.first(:username => u)[:apps])[/.+\/apps\/(.*)\/build\/.+/.match(request.referrer)[1]]["perms"].include?('upload')
+  halt 403, 'you don\'t have permission' if !JSON.parse($users.first(:username => u)[:apps])[/#{HHH}\/apps\/(.*)\/build\/.+/.match(request.referrer)[1]]["perms"].include?('upload')
   halt 500 unless File.absolute_path("data/#{u}/#{params['splat'].first}").match?(dirg(u)) && File.absolute_path("data/#{u}/#{params[:to]}").match?(dirg(u))
   FileUtils.mv("data/#{u}/#{params['splat'].first}", "data/#{u}/#{params[:to]}")
   "OK"
@@ -161,7 +165,7 @@ end
 
 post '/dir' do
   e = checklogin(request)
-  halt 403, 'you don\'t have permission' if !JSON.parse($users.first(:username => e["user"])[:apps])[/.+\/apps\/(.*)\/build\/.+/.match(request.referrer)[1]]["perms"].include?('upload')
+  halt 403, 'you don\'t have permission' if !JSON.parse($users.first(:username => e["user"])[:apps])[/#{HHH}\/apps\/(.*)\/build\/.+/.match(request.referrer)[1]]["perms"].include?('upload')
   halt 500, 'no.' unless File.absolute_path("data/#{e["user"]}/#{params[:p]}").match?(dirg(e["user"]))
   Dir.mkdir("data/#{e["user"]}/#{params[:p]}")
   "ok"
