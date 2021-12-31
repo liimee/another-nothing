@@ -33,7 +33,7 @@ end
 $users = db[:users]
 $config = db[:config]
 EEE = ENV["E"]=="y"
-HHH = EEE ? Socket.gethostname : 'localhost:3000'
+HHH = EEE ? ENV["H"]||Socket.gethostname : 'localhost:3000'
 def dirg(a) Regexp.new("#{File.absolute_path('.')}\/data\/#{a}\/.+") end
 
 def checklogin(request)
