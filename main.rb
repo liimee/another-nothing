@@ -230,7 +230,7 @@ post '/settings' do
         $users.where(username: v[:username]).delete
         FileUtils.remove_dir("data/#{v[:username]}")
       end
-    end
+    end if $users.first(username: u)[:admin]
 
     tpa = JSON.parse($users.first(username: u)[:apps])
     params.select{|k| k.start_with?('uninstall_')}.each do |k,_|
