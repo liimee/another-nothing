@@ -211,7 +211,7 @@ post '/settings' do
   #kinda dumb but ok
   s = URI(request.referrer)
   u = checklogin(request)["user"]
-  halt 500, 'no.' unless s.path == '/settings' && !request.xhr? && request.env["HTTP_SEC_FETCH_DEST"] != 'iframe'
+  halt 500, 'no.' unless s.host == HHH && s.path == '/settings' && !request.xhr? && request.env["HTTP_SEC_FETCH_DEST"] != 'iframe'
 
   if BCrypt::Password.new($users.first(:username => u)[:password]) == params["pass"]
     $users.where(:username => u).update(params.reject{|k| k.start_with?('app_')||k == 'pass'||k == 'users'||k.start_with?('uninstall_')})
