@@ -319,7 +319,7 @@ end
 
 get "/apps/:app/*" do
   g = checklogin(request)
-  halt 403 if g == nil || !JSON.parse($users.first(:username => g["user"])[:apps]).include?(params[:app])
+  halt 403, 'no' if g == nil || !JSON.parse($users.first(:username => g["user"])[:apps]).include?(params[:app]) || (!request.referrer.match?(/^https?:\/\/#{HHH}\/?$/) && !request.referrer.match?(/^https?:\/\/#{HHH}\/apps\/#{params[:app]}\/.*$/))
 
   k = params[:app]
   if File.exists?("apps/#{k}/#{params["splat"].first}")
