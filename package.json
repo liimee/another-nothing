@@ -4,7 +4,8 @@
   "private": true,
   "license": "MIT",
   "scripts": {
-    "start": "parcel build f/index.html f/adduser.html f/login.html --dist-dir build && ruby main.rb -p 3000 -o 0.0.0.0"
+    "idk": "parcel build f/index.html f/adduser.html f/login.html --dist-dir build && ruby main.rb -p 3000 -o 0.0.0.0",
+    "start": "parcel build f/index.html f/adduser.html f/login.html --dist-dir build && E=y ruby main.rb -p 80 -o 0.0.0.0"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^1.2.36",

@@ -3,10 +3,10 @@
 
 You'll need [Node](https://nodejs.org/), [Yarn](https://yarnpkg.com/), [Ruby](https://www.ruby-lang.org/), and [Bundler](https://bundler.io/)  
 ... and some other stuff probably  
-```
+```bash
 bundle
 yarn
-yarn start
+yarn start # yarn idk also works
 ```
 
 - mobile is not supported
