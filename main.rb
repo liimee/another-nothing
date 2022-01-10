@@ -30,16 +30,16 @@ db.create_table? :config do
   String :value
 end
 
-$users = db[:users]
-$config = db[:config]
+USERS = db[:users]
+CONFIG = db[:config]
 EEE = ENV["E"]=="y"
 HHH = EEE ? ENV["H"]||Socket.gethostname : 'localhost:3000'
 def dirg(a) Regexp.new("#{File.absolute_path('.')}\/data\/#{a}\/.+") end
 
 def checklogin(request)
   begin
-    s = JWT.decode(request.cookies["login"], "#{$config.first(:key => "jwt")}", true, { algorithm: 'HS256' })[0]
-    if $users.first(:username => s["user"]) == nil
+    s = JWT.decode(request.cookies["login"], "#{CONFIG.first(:key => "jwt")}", true, { algorithm: 'HS256' })[0]
+    if USERS.first(:username => s["user"]) == nil
       nil
     else
       s
@@ -49,7 +49,7 @@ def checklogin(request)
   end
 end
 
-$config.insert(:key => "jwt", :value => SecureRandom.hex) if $config.first(:key => "jwt") === nil
+CONFIG.insert(:key => "jwt", :value => SecureRandom.hex) if CONFIG.first(:key => "jwt") === nil
 
 before do
   redirect "#{request.scheme}://#{HHH}" if EEE && request.host != HHH
@@ -59,7 +59,7 @@ before do
 end
 
 get '/' do
-  if $users.count < 1
+  if USERS.count < 1
     send_file 'build/adduser.html'
   else
     if checklogin(request) == nil
@@ -72,7 +72,7 @@ end
 
 post '/upload' do
   e = checklogin(request)
-  halt 403, 'you don\'t have permission' if !JSON.parse($users.first(:username => e["user"])[:apps])[/#{HHH}\/apps\/(.*)\/build\/.+/.match(request.referrer)[1]]["perms"].include?('upload')
+  halt 403, 'you don\'t have permission' if !JSON.parse(USERS.first(:username => e["user"])[:apps])[/#{HHH}\/apps\/(.*)\/build\/.+/.match(request.referrer)[1]]["perms"].include?('upload')
   params["e"].each do |f|
     tempfile = f[:tempfile]
     filename = f[:filename]
@@ -93,7 +93,7 @@ get '/things' do
       out
     ])
 
-    evs('apps', $users.first(:username => d["user"])[:apps], d["user"])
+    evs('apps', USERS.first(:username => d["user"])[:apps], d["user"])
     evs('conf', getconf(d["user"]).to_json, d["user"])
   end
 end
@@ -119,7 +119,7 @@ end
 
 delete '/files/*' do
   u = checklogin(request)["user"]
-  halt 403, 'you don\'t have permission' if !JSON.parse($users.first(:username => u)[:apps])[/#{HHH}\/apps\/(.*)\/build\/.+/.match(request.referrer)[1]]["perms"].include?('upload')
+  halt 403, 'you don\'t have permission' if !JSON.parse(USERS.first(:username => u)[:apps])[/#{HHH}\/apps\/(.*)\/build\/.+/.match(request.referrer)[1]]["perms"].include?('upload')
   halt 500 unless File.absolute_path("data/#{u}/#{params['splat'].first}").match?(dirg(u))
   #handle errors?
   if File.directory?("data/#{u}/#{params['splat'].first}")
@@ -133,7 +133,7 @@ end
 
 post "/copy/*" do
   u = checklogin(request)["user"]
-  halt 403, 'you don\'t have permission' if !JSON.parse($users.first(:username => u)[:apps])[/#{HHH}\/apps\/(.*)\/build\/.+/.match(request.referrer)[1]]["perms"].include?('upload')
+  halt 403, 'you don\'t have permission' if !JSON.parse(USERS.first(:username => u)[:apps])[/#{HHH}\/apps\/(.*)\/build\/.+/.match(request.referrer)[1]]["perms"].include?('upload')
   halt 500 unless File.absolute_path("data/#{u}/#{params['splat'].first}").match?(dirg(u)) && File.absolute_path("data/#{u}/#{params[:to]}").match?(dirg(u))
   FileUtils.cp_r("data/#{u}/#{params['splat'].first}", "data/#{u}/#{params[:to]}")
   "OK"
@@ -141,7 +141,7 @@ end
 
 post "/move/*" do
   u = checklogin(request)["user"]
-  halt 403, 'you don\'t have permission' if !JSON.parse($users.first(:username => u)[:apps])[/#{HHH}\/apps\/(.*)\/build\/.+/.match(request.referrer)[1]]["perms"].include?('upload')
+  halt 403, 'you don\'t have permission' if !JSON.parse(USERS.first(:username => u)[:apps])[/#{HHH}\/apps\/(.*)\/build\/.+/.match(request.referrer)[1]]["perms"].include?('upload')
   halt 500 unless File.absolute_path("data/#{u}/#{params['splat'].first}").match?(dirg(u)) && File.absolute_path("data/#{u}/#{params[:to]}").match?(dirg(u))
   FileUtils.mv("data/#{u}/#{params['splat'].first}", "data/#{u}/#{params[:to]}")
   "OK"
@@ -149,13 +149,13 @@ end
 
 get '/addus' do
   s = checklogin(request)
-  halt 403 if s == nil || !$users.first(:username => s["user"])[:admin]
+  halt 403 if s == nil || !USERS.first(:username => s["user"])[:admin]
   send_file "build/adduser.html"
 end
 
 post '/addus' do
   s = checklogin(request)
-  if $users.count < 1 || s != nil || $users.first(:username => s["user"])[:admin]
+  if USERS.count < 1 || s != nil || USERS.first(:username => s["user"])[:admin]
     addUser(params)
     response.set_cookie :login, :value => jwt(params[:name])
   end
@@ -165,15 +165,15 @@ end
 
 post '/dir' do
   e = checklogin(request)
-  halt 403, 'you don\'t have permission' if !JSON.parse($users.first(:username => e["user"])[:apps])[/#{HHH}\/apps\/(.*)\/build\/.+/.match(request.referrer)[1]]["perms"].include?('upload')
+  halt 403, 'you don\'t have permission' if !JSON.parse(USERS.first(:username => e["user"])[:apps])[/#{HHH}\/apps\/(.*)\/build\/.+/.match(request.referrer)[1]]["perms"].include?('upload')
   halt 500, 'no.' unless File.absolute_path("data/#{e["user"]}/#{params[:p]}").match?(dirg(e["user"]))
   Dir.mkdir("data/#{e["user"]}/#{params[:p]}")
   "ok"
 end
 
 post '/login' do
-  redirect back unless $users.first(:username => params[:name]) != nil
-  x = BCrypt::Password.new($users.first(:username => params[:name])[:password])
+  redirect back unless USERS.first(:username => params[:name]) != nil
+  x = BCrypt::Password.new(USERS.first(:username => params[:name])[:password])
   response.set_cookie :login, :value => jwt(params[:name]) if x == params[:pass]
   redirect '/'
 end
@@ -184,12 +184,12 @@ get '/logout' do
 end
 
 def settings_p(u)
-  d = $users.first(:username => u)
+  d = USERS.first(:username => u)
   b = binding
   b.local_variable_set(:d, d)
   b.local_variable_set(:perm_list, ['upload'])
   b.local_variable_set(:admin, d[:admin])
-  b.local_variable_set(:users, $users)
+  b.local_variable_set(:users, USERS)
   [File.read('settings.rhtml'), b]
 end
 
@@ -201,7 +201,7 @@ get '/settings' do
 end
 
 def getconf(u)
-  s = $users.first(:username => u)
+  s = USERS.first(:username => u)
   {
     wp: s[:wp]
   }
@@ -213,35 +213,35 @@ post '/settings' do
   u = checklogin(request)["user"]
   halt 500, 'no.' unless s.host == HHH && s.path == '/settings' && !request.xhr? && request.env["HTTP_SEC_FETCH_DEST"] != 'iframe'
 
-  if BCrypt::Password.new($users.first(:username => u)[:password]) == params["pass"]
-    $users.where(:username => u).update(params.reject{|k| k.start_with?('app_')||k == 'pass'||k == 'users'||k.start_with?('uninstall_')})
-    g = JSON.parse($users.first(:username => u)[:apps])
+  if BCrypt::Password.new(USERS.first(:username => u)[:password]) == params["pass"]
+    USERS.where(:username => u).update(params.reject{|k| k.start_with?('app_')||k == 'pass'||k == 'users'||k.start_with?('uninstall_')})
+    g = JSON.parse(USERS.first(:username => u)[:apps])
 
     params.select {|k| k.start_with? 'app_'}.each do |k, v|
       v.reject! { |e|
         e == 'app'
       }
       g[k.sub('app_', '')]["perms"] = v
-      $users.where(:username => u).update(apps: JSON.generate(g))
+      USERS.where(:username => u).update(apps: JSON.generate(g))
     end
 
-    temp = $users
+    temp = USERS
     temp.each do |v|
       unless ((params.select{|k|k=='users'}['users'])||[]).include?(v[:username])||v[:username]==u
         JSON.parse(v[:apps]).each do |k,v|
           FileUtils.remove_dir("apps/#{k}") unless k == 'welcome'||k=='test'||k=='files'
         end
-        $users.where(username: v[:username]).delete
+        USERS.where(username: v[:username]).delete
         FileUtils.remove_dir("data/#{v[:username]}")
       end
-    end if $users.first(username: u)[:admin]
+    end if USERS.first(username: u)[:admin]
 
-    tpa = JSON.parse($users.first(username: u)[:apps])
+    tpa = JSON.parse(USERS.first(username: u)[:apps])
     params.select{|k| k.start_with?('uninstall_')}.each do |k,_|
       tpa.delete(k.sub('uninstall_', ''))
       FileUtils.remove_dir('apps/'+k.sub('uninstall_', ''))
     end
-    $users.where(:username => u).update(apps: JSON.generate(tpa))
+    USERS.where(:username => u).update(apps: JSON.generate(tpa))
 
     evs 'conf', getconf(u).to_json, u
     evs 'apps', tpa.to_json, u
@@ -255,12 +255,12 @@ def addUser(d)
   buildApp("welcome")
   buildApp("test")
   buildApp("files")
-  $users.insert(:username => d[:name], :password => BCrypt::Password.create(d[:pass]), :apps => '{"files": {"name": "Files", "perms": ["upload"]}, "test": {"name": "Test", "perms": []}, "welcome": {"name": "Welcome", "perms": []}}', :admin => d[:admin] != nil)
+  USERS.insert(:username => d[:name], :password => BCrypt::Password.create(d[:pass]), :apps => '{"files": {"name": "Files", "perms": ["upload"]}, "test": {"name": "Test", "perms": []}, "welcome": {"name": "Welcome", "perms": []}}', :admin => d[:admin] != nil)
   Dir.mkdir("data/#{d[:name]}")
 end
 
 def installApp(a, d, e)
-  s = $users.first(:username => a)[:apps]
+  s = USERS.first(:username => a)[:apps]
   s = JSON.parse s
   s[d] = {
     name: e,
@@ -268,7 +268,7 @@ def installApp(a, d, e)
   }
 
   d = JSON.generate(s)
-  $users.where(:username => a).update(apps: d)
+  USERS.where(:username => a).update(apps: d)
 
   evs('apps', d, a)
 end
@@ -285,7 +285,7 @@ end
 
 def jwt(a)
   p = { user: a, iat: Time.now.to_i }
-  JWT.encode(p, "#{$config.first(:key => "jwt")}", 'HS256')
+  JWT.encode(p, "#{CONFIG.first(:key => "jwt")}", 'HS256')
 end
 
 #set :port, 3000
@@ -294,7 +294,7 @@ post '/install' do
   #use some json file instead for name and stuff?
   halt 500, 'no.' unless URI(request.referrer).path == '/settings' && !request.xhr? && request.env["HTTP_SEC_FETCH_DEST"] != 'iframe'
   s = checklogin(request)
-  halt 401, 'authentication failed' if s == nil || BCrypt::Password.new($users.first(:username => s["user"])[:password]) != params["pass"]
+  halt 401, 'authentication failed' if s == nil || BCrypt::Password.new(USERS.first(:username => s["user"])[:password]) != params["pass"]
 
   halt 500, 'no.' unless File.absolute_path("data/#{s["user"]}/#{params[:path]}").match?(dirg(s["user"])) && File.directory?("data/#{s["user"]}/#{params[:path]}")
   u = SecureRandom.hex()
@@ -319,7 +319,7 @@ end
 
 get "/apps/:app/*" do
   g = checklogin(request)
-  halt 403, 'no' if g == nil || !JSON.parse($users.first(:username => g["user"])[:apps]).include?(params[:app]) || (!request.referrer.match?(/^https?:\/\/#{HHH}\/?$/) && !request.referrer.match?(/^https?:\/\/#{HHH}\/apps\/#{params[:app]}\/.*$/))
+  halt 403, 'no' if g == nil || !JSON.parse(USERS.first(:username => g["user"])[:apps]).include?(params[:app]) || (!request.referrer.match?(/^https?:\/\/#{HHH}\/?$/) && !request.referrer.match?(/^https?:\/\/#{HHH}\/apps\/#{params[:app]}\/.*$/))
 
   k = params[:app]
   if File.exists?("apps/#{k}/#{params["splat"].first}")
@@ -329,7 +329,7 @@ get "/apps/:app/*" do
   end
 end
 
-$users.each {|x|
+USERS.each {|x|
   s = JSON.parse x[:apps]
   s.each {|k, v|
     buildApp(k)
