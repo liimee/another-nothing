@@ -17,7 +17,17 @@
     file: 'test.html'
   }
 })">new window</button>
+<button onclick="fetch('/app_config').then(v => v.text()).then(v => alert(v))">config</button>
+<input id="sk" placeholder="set key">
+<input id="sv" placeholder="set value">
+<button onclick="x()">a</button>
+<input onchange="fetch('/app_config/'+encodeURIComponent(this.value), {method: 'delete'})" placeholder="del">
 <script>
 var s;
 window.onmessage = e => s = e.ports[0];
+function x() {
+  fetch('/app_config/'+encodeURIComponent(document.getElementById('sk').value)+'?val='+encodeURIComponent(document.getElementById('sv').value), {
+    method: 'post'
+  })
+}
 </script>

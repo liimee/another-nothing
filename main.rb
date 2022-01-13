@@ -207,6 +207,32 @@ def getconf(u)
   }
 end
 
+
+get '/app_config' do
+  #check if user has the app?
+  app = /https?:\/\/#{HHH}\/apps\/(.*)\/build\/.+/.match(request.referrer)[1]
+  u = checklogin(request)["user"]
+  ((JSON.parse(USERS.first(username: u)[:apps])[app]["config"])||{}).to_json
+end
+
+post '/app_config/:conf' do
+  app = /https?:\/\/#{HHH}\/apps\/(.*)\/build\/.+/.match(request.referrer)[1]
+  u = checklogin(request)["user"]
+  s = JSON.parse(USERS.first(username: u)[:apps])
+  s[app]["config"][params[:conf]] = params[:val]
+  USERS.where(username: u).update(apps: JSON.generate(s))
+  "OK"
+end
+
+delete '/app_config/:conf' do
+  app = /https?:\/\/#{HHH}\/apps\/(.*)\/build\/.+/.match(request.referrer)[1]
+  u = checklogin(request)["user"]
+  s = JSON.parse(USERS.first(username: u)[:apps])
+  s[app]["config"].delete(params[:conf])
+  USERS.where(username: u).update(apps: JSON.generate(s))
+  "OK"
+end
+
 post '/settings' do
   #kinda dumb but ok
   s = URI(request.referrer)
@@ -255,7 +281,10 @@ def addUser(d)
   buildApp("welcome")
   buildApp("test")
   buildApp("files")
-  USERS.insert(:username => d[:name], :password => BCrypt::Password.create(d[:pass]), :apps => '{"files": {"name": "Files", "perms": ["upload"]}, "test": {"name": "Test", "perms": []}, "welcome": {"name": "Welcome", "perms": []}}', :admin => d[:admin] != nil)
+  USERS.insert(:username => d[:name], :password => BCrypt::Password.create(d[:pass]), :apps => '{}', :admin => d[:admin] != nil)
+  installApp(d[:name], 'files', 'Files')
+  installApp(d[:name], 'test', 'Testing') if !EEE
+  installApp(d[:name], 'welcome', 'Welcome')
   Dir.mkdir("data/#{d[:name]}")
 end
 
@@ -264,7 +293,8 @@ def installApp(a, d, e)
   s = JSON.parse s
   s[d] = {
     name: e,
-    perms: []
+    perms: [],
+    config: {}
   }
 
   d = JSON.generate(s)
