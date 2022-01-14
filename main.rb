@@ -346,7 +346,11 @@ end
 
 def buildApp(a)
   cmd = "yarn run parcel build apps/#{a}/*.html --public-url \"/apps/#{a}/build\" --dist-dir apps/#{a}/build"
-  system(cmd)
+  if ENV["T"] == "y"
+    system(cmd, ">/dev/null")
+  else
+    system(cmd)
+  end
 end
 
 get "/apps/:app/*" do
