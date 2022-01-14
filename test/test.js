@@ -40,11 +40,17 @@ describe('adding users', () => {
 
 describe('logging in', () => {
   const e = chai.request.agent('http://localhost:3000')
-
   it('should work', done => {
     e.post('/login?name=a&pass=a').end((_, v) => {
       expect(v.text.includes('<title>another nothing</title>')).to.equal(true);
       done()
     })
   }).timeout(10000)
+
+  it('shouldn\'t work', done => {
+    chai.request('http://localhost:3000').post('/login?name=a&pass=b').end((_, v) => {
+      expect(v.text.includes('<title>sign in</title>')).to.equal(true);
+      done()
+    })
+  })
 })
