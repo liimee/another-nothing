@@ -5,9 +5,10 @@ const chaiHttp = require('chai-http');
 
 chai.use(chaiHttp)
 
-const e = chai.request.agent('http://localhost:3000')
 
 describe('adding users', () => {
+  const e = chai.request.agent('http://localhost:3000')
+
   it('should work', done => {
     e.post('/addus?name=a&pass=a&admin=on')
     .end((g, v) => {
@@ -36,3 +37,14 @@ describe('adding users', () => {
     })
   }).timeout(30000)
 });
+
+describe('logging in', () => {
+  const e = chai.request.agent('http://localhost:3000')
+
+  it('should work', done => {
+    e.post('/login?name=a&pass=a').end((_, v) => {
+      expect(v.text.includes('<title>another nothing</title>')).to.equal(true);
+      done()
+    })
+  }).timeout(10000)
+})
