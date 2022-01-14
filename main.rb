@@ -155,11 +155,13 @@ end
 
 post '/addus' do
   s = checklogin(request)
-  if USERS.count < 1 || s != nil || USERS.first(:username => s["user"])[:admin]
+  if USERS.count < 1 || (s != nil && USERS.first(:username => s["user"])[:admin])
     addUser(params)
     response.set_cookie :login, :value => jwt(params[:name])
+    redirect '/'
+  else
+    halt 403
   end
-  redirect '/'
   # TODO: add checks?
 end
 
