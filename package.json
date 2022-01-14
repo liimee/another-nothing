@@ -4,6 +4,7 @@
   "private": true,
   "license": "MIT",
   "scripts": {
+    "idkidk": "rm -rf data && parcel build f/index.html f/adduser.html f/login.html --dist-dir build && ruby main.rb -p 3000 -o 127.0.0.1 & sleep 2; mocha; kill $$",
     "idk": "parcel build f/index.html f/adduser.html f/login.html --dist-dir build && ruby main.rb -p 3000 -o 0.0.0.0",
     "start": "parcel build f/index.html f/adduser.html f/login.html --dist-dir build && E=y ruby main.rb -p 80 -o 0.0.0.0"
   },
@@ -18,5 +19,10 @@
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-draggable": "^4.4.4"
+  },
+  "devDependencies": {
+    "chai": "^4.3.4",
+    "chai-http": "^4.3.0",
+    "mocha": "^9.1.3"
   }
 }
