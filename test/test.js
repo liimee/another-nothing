@@ -59,10 +59,40 @@ describe('upload', () => {
   it('should fail', done => {
     e.post('/upload')
     .set('Referer', 'http://localhost:3000/apps/files/build/index.html')
-    .attach('e', Buffer.from('test test test', 'utf8'))
+    .attach('e[]', Buffer.from('test test test', 'utf8'))
     .end((_, v) => {
       expect(v).to.have.status(403)
       expect(v.text).to.equal('you don\'t have permission')
+      done()
+    })
+  })
+
+  it('should work', done => {
+    e.post('/settings?wp=default&users[]=a&users[]=b&app_files[]=app&app_files[]=upload&app_test[]=app&app_welcome[]=app&pass=a')
+    .set('Referer', 'http://localhost:3000/settings')
+    .end((_, v) => {
+      expect(v).to.have.header('X-Is', 'Settings')
+      done()
+    })
+  })
+
+  it('should work', done => {
+    e.post('/upload')
+    .set('Referer', 'http://localhost:3000/apps/files/build/index.html')
+    .attach('e[]', Buffer.from('test test test', 'utf8'), {
+      filename: 'e.txt'
+    })
+    .end((_, v) => {
+      expect(v).to.have.status(200)
+      expect(v.text).to.equal('ok, i guess')
+      done()
+    })
+  })
+
+  it('should exist', done => {
+    e.get('/files/e.txt').end((_, v) => {
+      expect(v).to.have.status(200)
+      expect(v.text).to.equal('test test test')
       done()
     })
   })

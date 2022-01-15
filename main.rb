@@ -201,6 +201,7 @@ get '/settings' do
   halt 500 if request.env["HTTP_SEC_FETCH_DEST"] == 'iframe'
   u = checklogin(request)
   s = settings_p u["user"]
+  headers "X-Is": "Settings"
   "#{ERB.new(s[0]).result(s[1])}"
 end
 
@@ -277,6 +278,7 @@ post '/settings' do
     evs 'apps', tpa.to_json, u
   end
 
+  headers "X-Is": "Settings"
   s = settings_p u
   "#{ERB.new(s[0]).result(s[1])}"
 end
