@@ -63,8 +63,10 @@ get '/' do
     send_file 'build/adduser.html'
   else
     if checklogin(request) == nil
+      headers "X-Is": "Login"
       send_file 'build/login.html'
     else
+      headers "X-Is": "Desktop"
       send_file 'build/index.html'
     end
   end
@@ -239,7 +241,7 @@ post '/settings' do
   #kinda dumb but ok
   s = URI(request.referrer)
   u = checklogin(request)["user"]
-  halt 500, 'no.' unless s.host == HHH && s.path == '/settings' && !request.xhr? && request.env["HTTP_SEC_FETCH_DEST"] != 'iframe'
+  halt 500, 'no.' unless request.referrer.match?(/https?:\/\/#{HHH}\/settings/) && !request.xhr? && request.env["HTTP_SEC_FETCH_DEST"] != 'iframe'
 
   if BCrypt::Password.new(USERS.first(:username => u)[:password]) == params["pass"]
     USERS.where(:username => u).update(params.reject{|k| k.start_with?('app_')||k == 'pass'||k == 'users'||k.start_with?('uninstall_')})

@@ -38,18 +38,31 @@ describe('adding users', () => {
   }).timeout(30000)
 });
 
+const e = chai.request.agent('http://localhost:3000')
 describe('logging in', () => {
-  const e = chai.request.agent('http://localhost:3000')
   it('should work', done => {
     e.post('/login?name=a&pass=a').end((_, v) => {
-      expect(v.text.includes('<title>another nothing</title>')).to.equal(true);
+      expect(v).to.have.header('X-Is', 'Desktop')
       done()
     })
   }).timeout(10000)
 
   it('shouldn\'t work', done => {
     chai.request('http://localhost:3000').post('/login?name=a&pass=b').end((_, v) => {
-      expect(v.text.includes('<title>sign in</title>')).to.equal(true);
+      expect(v).to.have.header('X-Is', 'Login')
+      done()
+    })
+  })
+})
+
+describe('upload', () => {
+  it('should fail', done => {
+    e.post('/upload')
+    .set('Referer', 'http://localhost:3000/apps/files/build/index.html')
+    .attach('e', Buffer.from('test test test', 'utf8'))
+    .end((_, v) => {
+      expect(v).to.have.status(403)
+      expect(v.text).to.equal('you don\'t have permission')
       done()
     })
   })
