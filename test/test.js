@@ -55,7 +55,7 @@ describe('logging in', () => {
   })
 })
 
-describe('upload', () => {
+describe('upload, change settings', () => {
   it('should fail', done => {
     e.post('/upload')
     .set('Referer', 'http://localhost:3000/apps/files/build/index.html')
