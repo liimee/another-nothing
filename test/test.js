@@ -113,6 +113,18 @@ describe('upload, perm', () => {
         done()
       })
     })
+
+    it('uploading to /../ should fail', () => {
+      e.post('/upload?path=/e/../../')
+      .set('Referer', 'http://localhost:3000/apps/files/build/index.html')
+      .attach('e[]', Buffer.from('test test test', 'utf8'), {
+        filename: 'e.txt'
+      })
+      .end((_, v) => {
+        expect(v).to.have.status(500)
+        expect(v.text).to.equal('cannot upload')
+      })
+    })
   })
 
   describe('check', () => {
@@ -128,6 +140,7 @@ describe('upload, perm', () => {
   })
 })
 
+//permissions test too?
 describe('move file', () => {
   it('should be moved', done => {
     e.post('/move/e.txt?to=e/e.txt')
@@ -159,5 +172,24 @@ describe('copy file', () => {
         })
       })
     })
+  })
+})
+
+describe('deleting', () => {
+  it('should delete the file', () => {
+    e.del('/files/e.txt').set('Referer', 'http://localhost:3000/apps/files/build/index.html').end((_, s) => expect(s).to.have.status(200))
+  })
+
+  it('/e.txt should be deleted', () => {
+    e.get('/files/e.txt').end((_, s) => expect(s).to.have.status(404))
+  })
+
+  it('should delete the dir', () => {
+    e.del('/files/e').set('Referer', 'http://localhost:3000/apps/files/build/index.html').end((_, s) => expect(s).to.have.status(200))
+  })
+
+  it('/e/ and everything in it should be deleted', () => {
+    e.get('/files/e/e.txt').end((_, s) => expect(s).to.have.status(404))
+    e.get('/files/e/').end((_, s) => expect(s).to.have.status(404))
   })
 })
