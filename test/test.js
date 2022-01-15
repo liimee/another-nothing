@@ -127,3 +127,37 @@ describe('upload, perm', () => {
     })
   })
 })
+
+describe('move file', () => {
+  it('should be moved', done => {
+    e.post('/move/e.txt?to=e/e.txt')
+    .set('Referer', 'http://localhost:3000/apps/files/build/index.html')
+    .end((_, s) => {
+      expect(s).to.have.status(200)
+      e.get('/files/e.txt').end((_, g) => {
+        expect(g).to.have.status(404)
+        e.get('/files/e/e.txt').end((_, g) => {
+          expect(g.text).to.equal('test test test')
+          done()
+        })
+      })
+    })
+  })
+})
+
+describe('copy file', () => {
+  it('should be copied', done => {
+    e.post('/copy/e/e.txt?to=/e.txt')
+    .set('Referer', 'http://localhost:3000/apps/files/build/index.html')
+    .end((_, s) => {
+      expect(s).to.have.status(200)
+      e.get('/files/e.txt').end((_, g) => {
+        expect(g.text).to.equal('test test test')
+        e.get('/files/e/e.txt').end((_, g) => {
+          expect(g.text).to.equal('test test test')
+          done()
+        })
+      })
+    })
+  })
+})

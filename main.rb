@@ -135,7 +135,7 @@ end
 
 post "/copy/*" do
   u = checklogin(request)["user"]
-  halt 403, 'you don\'t have permission' if !JSON.parse(USERS.first(:username => u)[:apps])[/#{HHH}\/apps\/(.*)\/build\/.+/.match(request.referrer)[1]]["perms"].include?('upload')
+  halt 403, 'you don\'t have permission' if !JSON.parse(USERS.first(:username => u)[:apps])[/https?:\/\/#{HHH}\/apps\/(.*)\/build\/.+/.match(request.referrer)[1]]["perms"].include?('upload')
   halt 500 unless File.absolute_path("data/#{u}/#{params['splat'].first}").match?(dirg(u)) && File.absolute_path("data/#{u}/#{params[:to]}").match?(dirg(u))
   FileUtils.cp_r("data/#{u}/#{params['splat'].first}", "data/#{u}/#{params[:to]}")
   "OK"
