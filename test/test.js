@@ -55,45 +55,75 @@ describe('logging in', () => {
   })
 })
 
-describe('upload, change settings', () => {
-  it('should fail', done => {
-    e.post('/upload')
-    .set('Referer', 'http://localhost:3000/apps/files/build/index.html')
-    .attach('e[]', Buffer.from('test test test', 'utf8'))
-    .end((_, v) => {
-      expect(v).to.have.status(403)
-      expect(v.text).to.equal('you don\'t have permission')
-      done()
+describe('upload, perm', () => {
+  describe('before', () => {
+    it('should fail (file)', done => {
+      e.post('/upload')
+      .set('Referer', 'http://localhost:3000/apps/files/build/index.html')
+      .attach('e[]', Buffer.from('test test test', 'utf8'))
+      .end((_, v) => {
+        expect(v).to.have.status(403)
+        expect(v.text).to.equal('you don\'t have permission')
+        done()
+      })
+    })
+
+    it('should fail (dir)', done => {
+      e.post('/dir?p=e')
+      .set('Referer', 'http://localhost:3000/apps/files/build/index.html')
+      .end((_, v) => {
+        expect(v).to.have.status(403)
+        expect(v.text).to.equal('you don\'t have permission')
+        done()
+      })
     })
   })
 
-  it('should work', done => {
-    e.post('/settings?wp=default&users[]=a&users[]=b&app_files[]=app&app_files[]=upload&app_test[]=app&app_welcome[]=app&pass=a')
-    .set('Referer', 'http://localhost:3000/settings')
-    .end((_, v) => {
-      expect(v).to.have.header('X-Is', 'Settings')
-      done()
+  describe('change settings', () => {
+    it('should work', done => {
+      e.post('/settings?wp=default&users[]=a&users[]=b&app_files[]=app&app_files[]=upload&app_test[]=app&app_welcome[]=app&pass=a')
+      .set('Referer', 'http://localhost:3000/settings')
+      .end((_, v) => {
+        expect(v).to.have.header('X-Is', 'Settings')
+        done()
+      })
     })
   })
 
-  it('should work', done => {
-    e.post('/upload')
-    .set('Referer', 'http://localhost:3000/apps/files/build/index.html')
-    .attach('e[]', Buffer.from('test test test', 'utf8'), {
-      filename: 'e.txt'
+  describe('after', () => {
+    it('should work (file)', done => {
+      e.post('/upload')
+      .set('Referer', 'http://localhost:3000/apps/files/build/index.html')
+      .attach('e[]', Buffer.from('test test test', 'utf8'), {
+        filename: 'e.txt'
+      })
+      .end((_, v) => {
+        expect(v).to.have.status(200)
+        expect(v.text).to.equal('ok, i guess')
+        done()
+      })
     })
-    .end((_, v) => {
-      expect(v).to.have.status(200)
-      expect(v.text).to.equal('ok, i guess')
-      done()
+
+    it('should work (dir)', done => {
+      e.post('/dir?p=e')
+      .set('Referer', 'http://localhost:3000/apps/files/build/index.html')
+      .end((_, v) => {
+        expect(v).to.have.status(200)
+        expect(v.text).to.equal('ok')
+        done()
+      })
     })
   })
 
-  it('should exist', done => {
-    e.get('/files/e.txt').end((_, v) => {
-      expect(v).to.have.status(200)
-      expect(v.text).to.equal('test test test')
-      done()
+  describe('check', () => {
+    it('/e.txt should exist', () => {
+      e.get('/files/e.txt').end((_, v) => expect(v.text).to.equal('test test test'))
+    })
+
+    it('/e/ should exist', () => {
+      e.get('/files/e').end((_, v) => expect(JSON.parse(v.text)).to.deep.equal({
+        files: []
+      }))
     })
   })
 })
