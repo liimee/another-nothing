@@ -33,7 +33,7 @@ end
 USERS = db[:users]
 CONFIG = db[:config]
 EEE = ENV["E"]=="y"
-HHH = EEE ? ENV["H"]||Socket.gethostname : 'localhost:3000'
+HHH = EEE ? ENV["H"]||Socket.gethostname : /localhost:3000|#{Socket.ip_address_list.detect{|intf| intf.ipv4_private?}.ip_address}:3000/
 def dirg(a) Regexp.new("#{File.absolute_path('.')}\/data\/#{a}\/.+") end
 
 def checklogin(request)
