@@ -1,0 +1,9 @@
+node_modules
+.parcel-cache
+.vagrant
+.yarn/
+build
+data
+worksonmymachine.png
+README.md
+Vagrantfile
